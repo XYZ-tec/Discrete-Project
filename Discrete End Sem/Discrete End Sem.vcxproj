@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Courses.h" />
+    <ClInclude Include="Enrollment.h" />
     <ClInclude Include="Faculty.h" />
     <ClInclude Include="Rooms.h" />
     <ClInclude Include="Student.h" />
