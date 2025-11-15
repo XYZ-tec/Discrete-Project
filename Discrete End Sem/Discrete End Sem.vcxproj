@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClInclude Include="Courses.h" />
     <ClInclude Include="Faculty.h" />
+    <ClInclude Include="Rooms.h" />
     <ClInclude Include="Student.h" />
     <ClInclude Include="TimeSlots.h" />
   </ItemGroup>
