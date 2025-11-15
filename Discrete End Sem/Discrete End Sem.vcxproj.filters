@@ -42,5 +42,8 @@
     <ClInclude Include="Semester.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DataBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
