@@ -24,5 +24,8 @@
     <ClInclude Include="Faculty.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TimeSlots.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

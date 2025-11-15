@@ -126,6 +126,7 @@
     <ClInclude Include="Courses.h" />
     <ClInclude Include="Faculty.h" />
     <ClInclude Include="Student.h" />
+    <ClInclude Include="TimeSlots.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
