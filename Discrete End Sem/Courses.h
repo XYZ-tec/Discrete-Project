@@ -14,6 +14,7 @@ private:
     vector<string> prerequisites;  // Set of prerequisite course IDs 
 
 public:
+    Courses() {}
     Courses(string id, string name, int credits);
     string getId() const;
     string getName() const;

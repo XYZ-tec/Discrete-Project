@@ -14,6 +14,7 @@ private:
     int year;
     vector<string> completedCourses;  // Set of completed courses (discrete: set)
 public:
+    Student() {}
     Student(string id, string name, string dept, int year);
     string getId() const;
     string getName() const;
@@ -22,6 +23,7 @@ public:
     void addCompletedCourse(string courseId);
     bool hasCompletedCourse(string courseId) const;
     void display() const;
+    const vector<string>& getCompletedCourses() const {}
 };
 
 #endif

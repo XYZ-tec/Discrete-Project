@@ -16,6 +16,7 @@ private:
     string semesterId;
 
 public:
+	Enrollment() {}
     Enrollment(string sId, string cId, string tId, string semId);
     string getStudentId() const;
     string getCourseId() const;

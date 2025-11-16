@@ -13,6 +13,7 @@ private:
     string endTime;
 
 public:
+	TimeSlots() {}
     TimeSlots(string id, string day, string start, string end);
     string getId() const;
     string getDay() const;

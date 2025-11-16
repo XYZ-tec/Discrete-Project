@@ -13,6 +13,7 @@ private:
     vector<string> studentIds;  // Set of student IDs in department
 
 public:
+	Department() {}
     Department(string id, string name);
     string getId() const;
     string getName() const;

@@ -12,6 +12,7 @@ private:
     int capacity;
 
 public:
+    Rooms() {}
     Rooms(string id, string type, int capacity);
     string getId() const;
     string getType() const;

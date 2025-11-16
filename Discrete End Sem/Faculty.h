@@ -14,6 +14,7 @@ private:
     vector<string> assignedCourses;  // Set of assigned course IDs
 
 public:
+    Faculty() {}
     Faculty(string id, string name, string dept);
     string getId() const;
     string getName() const;

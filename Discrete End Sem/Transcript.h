@@ -13,8 +13,9 @@ private:
     vector<pair<string, string>> grades;  // For Pairing The Course ID and Grade e.g A B and so on
 
 public:
-    Transcript(std::string sId);
-    void addGrade(std::string courseId, std::string grade);
+	Transcript() {}
+    Transcript(string sId);
+    void addGrade(string courseId, string grade);
     double calculateGPA() const; 
     void display() const;
 };

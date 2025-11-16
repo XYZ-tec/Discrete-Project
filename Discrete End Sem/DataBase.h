@@ -4,6 +4,8 @@
 #include<iostream>
 #include <map>
 #include <vector>
+#include <queue>
+#include <set>
 #include "Student.h"
 #include "Courses.h"
 #include "Faculty.h"
@@ -26,6 +28,7 @@ private:
     map<string, Transcript> transcripts;
     map<string, Department> departments;
     map<string, Semester> semesters;
+    map<string, vector<string>> prerequisiteGraph;
 
 public:
     void addStudent(const Student& s);
@@ -37,11 +40,29 @@ public:
     void addTranscript(const Transcript& t);
     void addDepartment(const Department& d);
     void addSemester(const Semester& s);
-    Student* getStudent(std::string id);
-    Courses* getCourse(std::string id);
+
+    Student* getStudent(string id);
+    Courses* getCourse(string id);
+    Faculty* getFaculty(string id);
+    Rooms* getRoom(string id);
+    TimeSlots* getTimeSlot(string id);
+    Department* getDepartment(string id);
+    Semester* getSemester(string id);
+
     void displayAllStudents() const;
     void displayAllCourses() const;
-    // Will add more methods as needed with the further needs
+    void displayAllFaculty() const;
+
+    void buildPrerequisiteGraph();
+    bool canEnroll(string studentId, string courseId);
+    vector<string> getAvailableCourses(string studentId);
+    bool hasCircularDependency();
+    vector<string> getValidCourseSequence();
+    set<string> getAllPrerequisites(string courseId);
+    bool hasTimeConflict(string studentId, string courseId, string timeSlotId);
+    bool hasFacultyConflict(string facultyId, string timeSlotId);
+    vector<string> getEnrolledStudents(string courseId);
+    vector<string> getStudentCourses(string studentId);
 };
 
 #endif

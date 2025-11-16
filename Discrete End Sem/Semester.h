@@ -12,6 +12,7 @@ private:
     string startDate;
     string endDate;
 public:
+	Semester() {}
     Semester(string id, string name, string start, string end);
     string getId() const;
     string getName() const;
