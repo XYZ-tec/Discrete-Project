@@ -15,6 +15,7 @@ private:
 public:
 	Transcript() {}
     Transcript(string sId);
+    string getStudentId() const;
     void addGrade(string courseId, string grade);
     double calculateGPA() const; 
     void display() const;

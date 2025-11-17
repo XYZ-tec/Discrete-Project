@@ -1,6 +1,6 @@
 #pragma once
-#ifndef UNIVERSITYDATABASE_H
-#define UNIVERSITYDATABASE_H
+#ifndef DATABASE_H
+#define DATABASE_H
 #include<iostream>
 #include <map>
 #include <vector>
@@ -16,7 +16,7 @@
 #include "Department.h"
 #include "Semester.h"
 using namespace std;
-class UniversityDataBase 
+class DataBase 
 {
 private:
     map<string, Student> students; 

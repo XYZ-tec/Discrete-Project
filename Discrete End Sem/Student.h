@@ -23,7 +23,7 @@ public:
     void addCompletedCourse(string courseId);
     bool hasCompletedCourse(string courseId) const;
     void display() const;
-    const vector<string>& getCompletedCourses() const {}
+    const vector<string>& getCompletedCourses() const;
 };
 
 #endif
