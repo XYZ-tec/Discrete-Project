@@ -418,7 +418,7 @@ vector<string> DataBase::getEnrolledStudents(string courseId)
 }
 
 // Get courses for a student
-vector<string> DataBase::getStudentCourses(string studentId) 
+vector<string> DataBase::getStudentCourses(string studentId)   
 {
     vector<string> studentCourses;
     for (const Enrollment& e : enrollments) 

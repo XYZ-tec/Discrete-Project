@@ -147,8 +147,10 @@
     <ClCompile Include="Semester.cpp" />
     <ClCompile Include="Student.cpp" />
     <ClCompile Include="StudentGroupModule.cpp" />
+    <ClCompile Include="testing main.cpp" />
     <ClCompile Include="TimeSlots.cpp" />
     <ClCompile Include="Transcript.cpp" />
+    <ClCompile Include="try.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
