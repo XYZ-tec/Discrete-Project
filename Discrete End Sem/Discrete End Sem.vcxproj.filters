@@ -45,6 +45,12 @@
     <ClInclude Include="DataBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StudentGroupModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InductionModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Courses.cpp">
@@ -75,6 +81,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DataBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StudentGroupModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InductionModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

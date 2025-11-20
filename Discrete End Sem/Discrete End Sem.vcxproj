@@ -128,6 +128,7 @@
     <ClInclude Include="Department.h" />
     <ClInclude Include="Enrollment.h" />
     <ClInclude Include="Faculty.h" />
+    <ClInclude Include="InductionModule.h" />
     <ClInclude Include="Rooms.h" />
     <ClInclude Include="Semester.h" />
     <ClInclude Include="Student.h" />
@@ -141,6 +142,7 @@
     <ClCompile Include="Department.cpp" />
     <ClCompile Include="Enrollment.cpp" />
     <ClCompile Include="Faculty.cpp" />
+    <ClCompile Include="InductionModule.cpp" />
     <ClCompile Include="Rooms.cpp" />
     <ClCompile Include="Semester.cpp" />
     <ClCompile Include="Student.cpp" />
