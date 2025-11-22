@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SETOPERATIONS_H
-#define SETOPERATIONS_H
+#ifndef SETOPERATIONSMODULE_H
+#define SETOPERATIONSMODULE_H
 #include <iostream>
 #include <set>
 #include <vector>
