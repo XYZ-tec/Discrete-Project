@@ -51,6 +51,9 @@
     <ClInclude Include="InductionModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="setoperations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Courses.cpp">

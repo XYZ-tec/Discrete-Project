@@ -131,6 +131,7 @@
     <ClInclude Include="InductionModule.h" />
     <ClInclude Include="Rooms.h" />
     <ClInclude Include="Semester.h" />
+    <ClInclude Include="setoperations.h" />
     <ClInclude Include="Student.h" />
     <ClInclude Include="StudentGroupModule.h" />
     <ClInclude Include="TimeSlots.h" />
