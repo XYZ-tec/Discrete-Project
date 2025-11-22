@@ -146,6 +146,7 @@
     <ClCompile Include="InductionModule.cpp" />
     <ClCompile Include="Rooms.cpp" />
     <ClCompile Include="Semester.cpp" />
+    <ClCompile Include="set.cpp" />
     <ClCompile Include="Student.cpp" />
     <ClCompile Include="StudentGroupModule.cpp" />
     <ClCompile Include="tester.cpp" />
