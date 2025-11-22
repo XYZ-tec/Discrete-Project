@@ -148,7 +148,7 @@
     <ClCompile Include="Rooms.cpp" />
     <ClCompile Include="Semester.cpp" />
     <ClCompile Include="set.cpp" />
-    <ClCompile Include="setoperations.cpp" />
+    <ClCompile Include="setoperationsModule.cpp" />
     <ClCompile Include="Student.cpp" />
     <ClCompile Include="StudentGroupModule.cpp" />
     <ClCompile Include="tester.cpp" />

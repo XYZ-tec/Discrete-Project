@@ -1,4 +1,4 @@
-﻿#include "SetOperations.h"
+﻿#include "SetOperationsModule.h"
 
 set<string> SetOperations::unionSets(const set<string>& setA, const set<string>& setB)
 {
@@ -226,5 +226,4 @@ void SetOperations::demonstrateSetOperations()
     }
     cout << " }" << endl;
 
-    cout << "\n=========================================================\n";
 }
