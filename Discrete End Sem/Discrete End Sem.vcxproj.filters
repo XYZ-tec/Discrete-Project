@@ -51,7 +51,13 @@
     <ClInclude Include="InductionModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="setoperations.h">
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="relationsModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="setoperationsModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,5 +110,25 @@
     <ClCompile Include="set.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="setoperationsModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="try set.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="relationsModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test_relationsMod.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Discrete End Sem.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Discrete End Sem.aps" />
   </ItemGroup>
 </Project>

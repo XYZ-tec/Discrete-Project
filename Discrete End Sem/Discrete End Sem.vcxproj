@@ -129,10 +129,11 @@
     <ClInclude Include="Enrollment.h" />
     <ClInclude Include="Faculty.h" />
     <ClInclude Include="InductionModule.h" />
+    <ClInclude Include="relationsModule.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Rooms.h" />
     <ClInclude Include="Semester.h" />
-    <ClInclude Include="setoperations.h" />
+    <ClInclude Include="setoperationsModule.h" />
     <ClInclude Include="Student.h" />
     <ClInclude Include="StudentGroupModule.h" />
     <ClInclude Include="TimeSlots.h" />
@@ -145,6 +146,7 @@
     <ClCompile Include="Enrollment.cpp" />
     <ClCompile Include="Faculty.cpp" />
     <ClCompile Include="InductionModule.cpp" />
+    <ClCompile Include="relationsModule.cpp" />
     <ClCompile Include="Rooms.cpp" />
     <ClCompile Include="Semester.cpp" />
     <ClCompile Include="set.cpp" />
@@ -153,6 +155,7 @@
     <ClCompile Include="StudentGroupModule.cpp" />
     <ClCompile Include="tester.cpp" />
     <ClCompile Include="testing main.cpp" />
+    <ClCompile Include="test_relationsMod.cpp" />
     <ClCompile Include="TimeSlots.cpp" />
     <ClCompile Include="Transcript.cpp" />
     <ClCompile Include="try set.cpp" />
@@ -160,6 +163,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Discrete End Sem.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Discrete End Sem.aps" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
