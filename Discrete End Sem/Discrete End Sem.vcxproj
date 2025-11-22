@@ -129,6 +129,7 @@
     <ClInclude Include="Enrollment.h" />
     <ClInclude Include="Faculty.h" />
     <ClInclude Include="InductionModule.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Rooms.h" />
     <ClInclude Include="Semester.h" />
     <ClInclude Include="setoperations.h" />
@@ -147,13 +148,18 @@
     <ClCompile Include="Rooms.cpp" />
     <ClCompile Include="Semester.cpp" />
     <ClCompile Include="set.cpp" />
+    <ClCompile Include="setoperations.cpp" />
     <ClCompile Include="Student.cpp" />
     <ClCompile Include="StudentGroupModule.cpp" />
     <ClCompile Include="tester.cpp" />
     <ClCompile Include="testing main.cpp" />
     <ClCompile Include="TimeSlots.cpp" />
     <ClCompile Include="Transcript.cpp" />
+    <ClCompile Include="try set.cpp" />
     <ClCompile Include="try.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Discrete End Sem.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
