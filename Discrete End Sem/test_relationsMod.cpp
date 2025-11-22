@@ -1,5 +1,5 @@
 ﻿#include <iostream>
-#include "RelationsModule.h"
+#include "FunctionsModule.h"
 using namespace std;
 
 int main()
@@ -8,10 +8,10 @@ int main()
     cout << "        RELATIONS MODULE - TEST RUN\n";
     cout << "=============================================\n";
 
-    RelationsModule module;
+    FunctionsModule module;
 
     // Run all built-in demonstrations
-    module.demonstrateRelations();
+    module.demonstrateFunctions();
 
     cout << "\n=============================================\n";
     cout << "        END OF TESTING\n";

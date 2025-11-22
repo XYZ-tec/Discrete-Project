@@ -60,6 +60,9 @@
     <ClInclude Include="setoperationsModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="functionsModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Courses.cpp">
@@ -120,6 +123,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="test_relationsMod.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="functionsModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
