@@ -130,6 +130,7 @@
     <ClInclude Include="Faculty.h" />
     <ClInclude Include="functionsModule.h" />
     <ClInclude Include="InductionModule.h" />
+    <ClInclude Include="Logic&amp;InferenceModule.h" />
     <ClInclude Include="relationsModule.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Rooms.h" />
@@ -148,6 +149,7 @@
     <ClCompile Include="Faculty.cpp" />
     <ClCompile Include="functionsModule.cpp" />
     <ClCompile Include="InductionModule.cpp" />
+    <ClCompile Include="Logic&amp;InferenceModule.cpp" />
     <ClCompile Include="relationsModule.cpp" />
     <ClCompile Include="Rooms.cpp" />
     <ClCompile Include="Semester.cpp" />
