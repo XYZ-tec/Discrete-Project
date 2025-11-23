@@ -1,7 +1,6 @@
 ﻿#pragma once
 #ifndef LOGICENGINE_H
 #define LOGICENGINE_H
-
 #include <string>
 #include <vector>
 #include <map>
@@ -12,47 +11,52 @@
 #include "DataBase.h"
 using namespace std;
 
-class LogicEngine {
+class LogicEngine 
+{
 public:
-    // Structure for logical rule
-    struct Rule {
+    struct Rule
+    {
         string ruleId;
         string condition;      // IF part (antecedent)
         string consequence;    // THEN part (consequent)
         string ruleType;       // "IMPLIES", "AND", "OR", "NOT"
         bool isActive;
 
-        void display() const {
+        void display() const
+        {
             cout << "Rule " << ruleId << ": ";
             cout << "IF (" << condition << ") THEN (" << consequence << ")";
             cout << " [" << (isActive ? "ACTIVE" : "INACTIVE") << "]\n";
         }
     };
 
-    // Structure for fact
-    struct Fact {
+    struct Fact 
+    {
         string factId;
         string statement;
         bool truthValue;
 
-        void display() const {
+        void display() const 
+        {
             cout << "Fact " << factId << ": " << statement
                 << " = " << (truthValue ? "TRUE" : "FALSE") << "\n";
         }
     };
 
-    // Structure for conflict report
-    struct Conflict {
+    struct Conflict 
+    {
         string conflictType;
         string description;
         vector<string> involvedEntities;
         string severity;  // "HIGH", "MEDIUM", "LOW"
 
-        void display() const {
+        void display() const 
+        {
             cout << "[" << severity << "] " << conflictType << "\n";
             cout << "  Description: " << description << "\n";
             cout << "  Entities: ";
-            for (const string& entity : involvedEntities) {
+            for (const string& entity : involvedEntities) 
+            {
                 cout << entity << " ";
             }
             cout << "\n";
@@ -70,8 +74,6 @@ private:
 public:
     LogicEngine(DataBase* database) : db(database), nextRuleId(1), nextFactId(1) {}
 
-    // === FILE HANDLING ===
-
     // Load rules from file
     bool loadRulesFromFile(string filename);
 
@@ -86,8 +88,6 @@ public:
 
     // Save conflicts to file
     bool saveConflictsToFile(string filename) const;
-
-    // === RULE MANAGEMENT ===
 
     // Add a logical rule
     string addRule(string condition, string consequence, string ruleType = "IMPLIES");
@@ -107,8 +107,6 @@ public:
     // Get rule count
     int getRuleCount() const { return rules.size(); }
 
-    // === FACT MANAGEMENT ===
-
     // Add a fact
     string addFact(string statement, bool truthValue);
 
@@ -127,8 +125,6 @@ public:
     // Get fact count
     int getFactCount() const { return facts.size(); }
 
-    // === INFERENCE ENGINE ===
-
     // Perform forward chaining (derive new facts from existing ones)
     vector<Fact> forwardChaining();
 
@@ -143,8 +139,6 @@ public:
 
     // Apply all inference rules and return summary
     void performInference();
-
-    // === CONFLICT DETECTION ===
 
     // Detect all conflicts in the system
     vector<Conflict> detectAllConflicts();
@@ -161,8 +155,6 @@ public:
     // Clear all conflicts
     void clearConflicts() { conflicts.clear(); }
 
-    // === POLICY ENFORCEMENT ===
-
     // Verify academic policies
     bool verifyPolicy(string policyRule);
 
@@ -171,8 +163,6 @@ public:
 
     // Get violated policies
     vector<string> getViolatedPolicies();
-
-    // === UTILITY ===
 
     // Evaluate a logical expression
     bool evaluateExpression(string expression);
@@ -190,7 +180,6 @@ public:
     void displayStatistics() const;
 
 private:
-    // === HELPER METHODS ===
 
     // Parse condition/consequence into components
     vector<string> parseComponents(string statement);
