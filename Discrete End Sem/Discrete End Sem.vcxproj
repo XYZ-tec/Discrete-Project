@@ -155,13 +155,10 @@
     <ClCompile Include="setoperationsModule.cpp" />
     <ClCompile Include="Student.cpp" />
     <ClCompile Include="StudentGroupModule.cpp" />
-    <ClCompile Include="tester.cpp" />
-    <ClCompile Include="testing main.cpp" />
     <ClCompile Include="test_relationsMod.cpp" />
     <ClCompile Include="TimeSlots.cpp" />
     <ClCompile Include="Transcript.cpp" />
     <ClCompile Include="try set.cpp" />
-    <ClCompile Include="try.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Discrete End Sem.rc" />
