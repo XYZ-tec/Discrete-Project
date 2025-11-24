@@ -63,6 +63,12 @@
     <ClInclude Include="functionsModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Logic&amp;InferenceModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsistencyChecker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Courses.cpp">
@@ -101,15 +107,6 @@
     <ClCompile Include="InductionModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="testing main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="try.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tester.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="set.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -126,6 +123,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="functionsModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic&amp;InferenceModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsistencyChecker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
