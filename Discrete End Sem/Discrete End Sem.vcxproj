@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClInclude Include="ConsistencyChecker.h" />
     <ClInclude Include="Courses.h" />
+    <ClInclude Include="CourseScheduling.h" />
     <ClInclude Include="DataBase.h" />
     <ClInclude Include="Department.h" />
     <ClInclude Include="Enrollment.h" />
@@ -145,6 +146,7 @@
   <ItemGroup>
     <ClCompile Include="ConsistencyChecker.cpp" />
     <ClCompile Include="Courses.cpp" />
+    <ClCompile Include="CourseScheduling.cpp" />
     <ClCompile Include="DataBase.cpp" />
     <ClCompile Include="Department.cpp" />
     <ClCompile Include="Enrollment.cpp" />
