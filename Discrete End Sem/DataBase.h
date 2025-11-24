@@ -56,14 +56,15 @@ public:
     void displayAllCourses() const;
     void displayAllFaculty() const;
 
+    bool checkPrerequisitesSatisfied(string studentId, string courseId);
     void buildPrerequisiteGraph();
     bool canEnroll(string studentId, string courseId);
     vector<string> getAvailableCourses(string studentId);
-    bool hasCircularDependency();
     vector<string> getValidCourseSequence();
     set<string> getAllPrerequisites(string courseId);
     bool hasTimeConflict(string studentId, string courseId, string timeSlotId);
     bool hasFacultyConflict(string facultyId, string timeSlotId);
+    bool hasCircularDependency();
     vector<string> getEnrolledStudents(string courseId);
     vector<string> getStudentCourses(string studentId);
 

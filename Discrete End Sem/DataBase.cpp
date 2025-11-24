@@ -1,5 +1,6 @@
 #include "DataBase.h"
-
+#include "ConsistencyChecker.h"
+#include "courses.h"
 // Add methods
 void DataBase::addStudent(const Student& s)
 {
@@ -154,27 +155,10 @@ void DataBase::buildPrerequisiteGraph()
 }
 
 // Check if student can enroll in a course
-bool DataBase::canEnroll(string studentId, string courseId) 
+
+bool DataBase::canEnroll(string studentId, string courseId)
 {
-    Student* student = getStudent(studentId);
-    Courses* course = getCourse(courseId);
-
-    if (!student || !course) 
-    {
-        return false;
-    }
-
-    // Check all prerequisites
-    const vector<string>& prereqs = course->getPrerequisites();
-    for (const string& prereq : prereqs) 
-    {
-        if (!student->hasCompletedCourse(prereq)) 
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return checkPrerequisitesSatisfied(studentId, courseId);
 }
 
 // Get available courses for a student
@@ -199,52 +183,37 @@ vector<string> DataBase::getAvailableCourses(string studentId)
 
     return available;
 }
-bool hasCycleDFSHelper(const string& courseId, set<string>& visited, set<string>& recursionStack, const map<string, vector<string>>& prereqGraph) 
-{
-    visited.insert(courseId);
-    recursionStack.insert(courseId);
 
-    if (prereqGraph.find(courseId) != prereqGraph.end()) 
+bool DataBase::checkPrerequisitesSatisfied(string studentId, string courseId)
+{
+    Student* student = getStudent(studentId);
+    Courses* course = getCourse(courseId);
+
+    if (!student || !course)
+        return false;
+
+    const vector<string>& prereqs = course->getPrerequisites();
+    for (const string& prereq : prereqs)
     {
-        const vector<string>& prereqs = prereqGraph.at(courseId);
-        for (const string& prereq : prereqs) 
-        {
-            // If not visited, recurse
-            if (visited.find(prereq) == visited.end())
-            {
-                if (hasCycleDFSHelper(prereq, visited, recursionStack, prereqGraph)) 
-                {
-                    return true;
-                }
-            }
-            // If in recursion stack, cycle found
-            else if (recursionStack.find(prereq) != recursionStack.end())
-            {
-                return true;
-            }
-        }
+        if (!student->hasCompletedCourse(prereq))
+            return false;
     }
 
-    recursionStack.erase(courseId);
-    return false;
+    return true;
 }
-// Check for circular dependencies using DFS
+
 bool DataBase::hasCircularDependency()
 {
-    set<string> visited;
-    set<string> recursionStack;
-    // Check each course
-    for (const auto& pair : courses) 
+    ConsistencyChecker checker;
+
+    // Build prerequisite map
+    map<string, vector<string>> prereqMap;
+    for (const auto& pair : courses)
     {
-        if (visited.find(pair.first) == visited.end()) 
-        {
-            if (hasCycleDFSHelper(pair.first, visited, recursionStack, prerequisiteGraph))
-            {
-                return true;
-            }
-        }
+        prereqMap[pair.first] = pair.second.getPrerequisites();
     }
-    return false;
+
+    return checker.detectCircularPrerequisites(prereqMap);
 }
 
 

@@ -1,5 +1,5 @@
 #include "StudentGroupModule.h"
-
+#include "setoperationsModule.h"
 vector<GroupGenerator::Group> GroupGenerator::generateAllCombinations(vector<string> studentIds,int groupSize) {
     vector<Group> result;
     vector<string> current;
@@ -93,31 +93,13 @@ set<string> GroupGenerator::getStudentsInElective( map<string, set<string>>& ele
 // SET INTERSECTION 
 set<string> GroupGenerator::findCommonStudents(set<string>& elective1Students,set<string>& elective2Students)
 {
-    set<string> result;
-
-    // Intersection students in BOTH electives
-    for (const string& sid : elective1Students) 
-    {
-        if (elective2Students.count(sid) > 0) 
-        {
-            result.insert(sid);
-        }
-    }
-    return result;
+    return SetOperations::intersectionSets(elective1Students, elective2Students);
 }
 
 // SET UNION 
 set<string> GroupGenerator::findAllStudents( set<string>& elective1Students, set<string>& elective2Students )
 {
-    set<string> result = elective1Students;
-
-    // Union: students in EITHER elective
-    for (const string& sid : elective2Students)
-    {
-        result.insert(sid);
-    }
-
-    return result;
+    return SetOperations::unionSets(elective1Students, elective2Students);
 }
 
 int GroupGenerator::factorial(int n) 

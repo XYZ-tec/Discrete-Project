@@ -10,18 +10,18 @@ bool CourseScheduling::canTake(string course, vector<string>& taken)
 
     vector<string> req = prereq[course];
 
-    for (int i = 0; i < req.size(); i++)
+    for (const string& r : req)
     {
-        bool ok = false;
-        for (int j = 0; j < taken.size(); j++)
+        bool found = false;
+        for (const string& t : taken)
         {
-            if (taken[j] == req[i])
+            if (t == r)
             {
-                ok = true;
+                found = true;
                 break;
             }
         }
-        if (!ok) return false;
+        if (!found) return false;
     }
     return true;
 }

@@ -153,6 +153,7 @@
     <ClCompile Include="functionsModule.cpp" />
     <ClCompile Include="InductionModule.cpp" />
     <ClCompile Include="Logic&amp;InferenceModule.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="relationsModule.cpp" />
     <ClCompile Include="Rooms.cpp" />
     <ClCompile Include="Semester.cpp" />
