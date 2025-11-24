@@ -9,6 +9,11 @@
 using namespace std;
 class ConsistencyChecker
 {
+private:
+    int dfsDepth(const string& node,
+        const map<string, vector<string>>& prerequisites,
+        map<string, int>& memo,
+        map<string, int>& visiting);
 public:
     ConsistencyChecker();
 
