@@ -132,7 +132,6 @@
     <ClInclude Include="InductionModule.h" />
     <ClInclude Include="Logic&amp;InferenceModule.h" />
     <ClInclude Include="relationsModule.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Rooms.h" />
     <ClInclude Include="Semester.h" />
     <ClInclude Include="setoperationsModule.h" />
@@ -153,14 +152,12 @@
     <ClCompile Include="relationsModule.cpp" />
     <ClCompile Include="Rooms.cpp" />
     <ClCompile Include="Semester.cpp" />
-    <ClCompile Include="set.cpp" />
     <ClCompile Include="setoperationsModule.cpp" />
     <ClCompile Include="Student.cpp" />
     <ClCompile Include="StudentGroupModule.cpp" />
     <ClCompile Include="test_relationsMod.cpp" />
     <ClCompile Include="TimeSlots.cpp" />
     <ClCompile Include="Transcript.cpp" />
-    <ClCompile Include="try set.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Discrete End Sem.rc" />
