@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ConsistencyChecker.h" />
     <ClInclude Include="Courses.h" />
     <ClInclude Include="DataBase.h" />
     <ClInclude Include="Department.h" />
@@ -141,6 +142,7 @@
     <ClInclude Include="Transcript.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConsistencyChecker.cpp" />
     <ClCompile Include="Courses.cpp" />
     <ClCompile Include="DataBase.cpp" />
     <ClCompile Include="Department.cpp" />
