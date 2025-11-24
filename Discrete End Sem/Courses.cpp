@@ -1,11 +1,5 @@
 #include "Courses.h"
-
-Courses::Courses(string id, string name, int credits)
-{
-    this->id = id;
-    this->name = name;
-    this->credits = credits;
-}
+Courses::Courses(string id, string name, int credits) : id(id), name(name), credits(credits) {}
 
 string Courses::getId() const
 {
@@ -38,7 +32,16 @@ void Courses::display() const
     cout << "Name: " << name << endl;
     cout << "Credits: " << credits << endl;
     cout << "Prerequisites: ";
-    for (size_t i = 0; i < prerequisites.size(); ++i)
-        cout << prerequisites[i] << " ";
+    if (prerequisites.empty())
+    {
+        cout << "None";
+    }
+    else
+    {
+        for (const string& prereq : prerequisites)
+        {
+            cout << prereq << " ";
+        }
+    }
     cout << endl;
 }

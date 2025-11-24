@@ -6,6 +6,8 @@
 #include <vector>
 #include <queue>
 #include <set>
+#include <fstream>
+#include <sstream>
 #include "Student.h"
 #include "Courses.h"
 #include "Faculty.h"
