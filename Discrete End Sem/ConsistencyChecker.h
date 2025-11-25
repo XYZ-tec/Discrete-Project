@@ -85,6 +85,9 @@ public:
         const map<string, vector<string>>& prerequisites,
         int limit
     );
+
+    int countCycles(const map<string, vector<string>>& prerequisites);
+
 };
 
 #endif

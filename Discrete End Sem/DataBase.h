@@ -70,6 +70,16 @@ public:
 
     bool loadFromFile(string filename = "university_data.txt");
     bool saveToFile(string filename = "university_data.txt") const;
+
+
+	// functions added for the testing purposes will comment them later
+
+    map<string, Student>& getAllStudents() { return students; }
+    map<string, Courses>& getAllCourses() { return courses; }
+    map<string, Faculty>& getAllFaculty() { return faculties; }
+    map<string, Rooms>& getAllRooms() { return rooms; }
+    map<string, TimeSlots>& getAllTimeSlots() { return timeSlots; }
+    vector<Enrollment>& getAllEnrollments() { return enrollments; }
 };
 
 #endif

@@ -365,3 +365,62 @@ bool ConsistencyChecker::checkPrerequisiteDepthLimit(
 
     return true;
 }
+
+int ConsistencyChecker::countCycles(const map<string, vector<string>>& prerequisites)
+{
+    int cycleCount = 0;
+    map<string, int> state;
+
+    // Initialize
+    for (map<string, vector<string>>::const_iterator it = prerequisites.begin();
+        it != prerequisites.end(); ++it) {
+        state[it->first] = 0;
+    }
+
+    // Simple DFS to detect cycles
+    stack<string> st;
+
+    for (map<string, vector<string>>::const_iterator it = prerequisites.begin();
+        it != prerequisites.end(); ++it) {
+
+        const string& startNode = it->first;
+
+        if (state[startNode] != 0) continue;
+
+        st.push(startNode);
+
+        while (!st.empty()) {
+            string cur = st.top();
+
+            if (state[cur] == 0) {
+                state[cur] = 1;
+
+                if (prerequisites.count(cur)) {
+                    const vector<string>& neighbors = prerequisites.at(cur);
+
+                    for (size_t i = 0; i < neighbors.size(); i++) {
+                        const string& neighbor = neighbors[i];
+
+                        if (!state.count(neighbor)) {
+                            state[neighbor] = 0;
+                        }
+
+                        if (state[neighbor] == 1) {
+                            cycleCount++;
+                        }
+
+                        if (state[neighbor] == 0) {
+                            st.push(neighbor);
+                        }
+                    }
+                }
+            }
+            else {
+                st.pop();
+                state[cur] = 2;
+            }
+        }
+    }
+
+    return cycleCount;
+}

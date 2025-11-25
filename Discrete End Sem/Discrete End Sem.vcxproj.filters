@@ -51,9 +51,6 @@
     <ClInclude Include="InductionModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="relationsModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -110,13 +107,7 @@
     <ClCompile Include="InductionModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="set.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="setoperationsModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="try set.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="relationsModule.cpp">
@@ -135,6 +126,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CourseScheduling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tester main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
