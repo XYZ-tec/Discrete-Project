@@ -824,18 +824,20 @@ void logicMenu()
         case 8:
         {
             string filename;
-            cout << "Enter filename: ";
+            cout << "Enter filename (default: logic_rules.txt): ";
             getline(cin, filename);
-            logicEngine.loadRulesFromFile(filename);
+            if (filename.empty()) filename = "logic_rules.txt";
+            logicEngine.loadRules(filename);
             pauseScreen();
             break;
         }
         case 9:
         {
             string filename;
-            cout << "Enter filename: ";
+            cout << "Enter filename (default: logic_rules.txt): ";
             getline(cin, filename);
-            logicEngine.saveRulesToFile(filename);
+            if (filename.empty()) filename = "logic_rules.txt";
+            logicEngine.saveRules(filename);
             pauseScreen();
             break;
         }
