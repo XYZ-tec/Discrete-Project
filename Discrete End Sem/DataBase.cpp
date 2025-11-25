@@ -1,4 +1,4 @@
-#include "DataBase.h"
+﻿#include "DataBase.h"
 #include "ConsistencyChecker.h"
 #include "courses.h"
 // Add methods
@@ -410,500 +410,270 @@ string DataBase::trim(const string& str) const
     return str.substr(first, last - first + 1);
 }
 
-//  LOAD FUNCTIONS 
-
-bool DataBase::loadStudentsFromFile(string filename)
+bool DataBase::loadFromFile(string filename)
 {
     ifstream file(filename);
     if (!file.is_open())
     {
-        cout << "Error: Cannot open file " << filename << endl;
+        cout << " No existing data file. Starting fresh.\n";
         return false;
     }
 
     string line;
-    int loadedCount = 0;
+    string currentSection = "";
 
-    // Skip header line if present
-    getline(file, line);
-    if (line.find("StudentID") == string::npos)
-    {
-        // No header, rewind
-        file.clear();
-        file.seekg(0);
-    }
-
-    // Format: StudentID,Name,Department,Year,CompletedCourses(separated by semicolons)
-    // Example: S001,John Doe,CS,2,CS101;MATH101;PHY101
     while (getline(file, line))
     {
-        if (line.empty() || line[0] == '#')
-            continue;
+        // Skip empty lines
+        if (line.empty()) continue;
 
-        stringstream ss(line);
-        string id, name, dept, yearStr, completedStr;
-
-        getline(ss, id, ',');
-        getline(ss, name, ',');
-        getline(ss, dept, ',');
-        getline(ss, yearStr, ',');
-        getline(ss, completedStr);
-
-        id = trim(id);
-        name = trim(name);
-        dept = trim(dept);
-        yearStr = trim(yearStr);
-        completedStr = trim(completedStr);
-
-        int year = stoi(yearStr);
-        Student student(id, name, dept, year);
-
-        // Parse completed courses
-        if (!completedStr.empty())
+        // Check for section headers
+        if (line == "[STUDENTS]")
         {
-            stringstream courseStream(completedStr);
-            string courseId;
-            while (getline(courseStream, courseId, ';'))
-            {
-                courseId = trim(courseId);
-                if (!courseId.empty())
-                {
-                    student.addCompletedCourse(courseId);
-                }
-            }
+            currentSection = "STUDENTS";
+            continue;
+        }
+        else if (line == "[COURSES]")
+        {
+            currentSection = "COURSES";
+            continue;
+        }
+        else if (line == "[FACULTY]")
+        {
+            currentSection = "FACULTY";
+            continue;
+        }
+        else if (line == "[ROOMS]")
+        {
+            currentSection = "ROOMS";
+            continue;
+        }
+        else if (line == "[TIMESLOTS]")
+        {
+            currentSection = "TIMESLOTS";
+            continue;
+        }
+        else if (line == "[ENROLLMENTS]")
+        {
+            currentSection = "ENROLLMENTS";
+            continue;
+        }
+        else if (line == "[DEPARTMENTS]")
+        {
+            currentSection = "DEPARTMENTS";
+            continue;
+        }
+        else if (line == "[SEMESTERS]")
+        {
+            currentSection = "SEMESTERS";
+            continue;
         }
 
-        students[id] = student;
-        loadedCount++;
-    }
-
-    file.close();
-    cout << " Loaded " << loadedCount << " students from " << filename << endl;
-    return true;
-}
-
-bool DataBase::loadCoursesFromFile(string filename)
-{
-    ifstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot open file " << filename << endl;
-        return false;
-    }
-
-    string line;
-    int loadedCount = 0;
-
-    // Skip header
-    getline(file, line);
-    if (line.find("CourseID") == string::npos)
-    {
-        file.clear();
-        file.seekg(0);
-    }
-
-    // Format: CourseID,Name,Credits,Prerequisites(separated by semicolons)
-    // Example: CS201,Data Structures,3,CS101;MATH101
-    while (getline(file, line))
-    {
-        if (line.empty() || line[0] == '#')
-            continue;
-
-        stringstream ss(line);
-        string id, name, creditsStr, prereqStr;
-
-        getline(ss, id, ',');
-        getline(ss, name, ',');
-        getline(ss, creditsStr, ',');
-        getline(ss, prereqStr);
-
-        id = trim(id);
-        name = trim(name);
-        creditsStr = trim(creditsStr);
-        prereqStr = trim(prereqStr);
-
-        int credits = stoi(creditsStr);
-        Courses course(id, name, credits);
-
-        // Parse prerequisites
-        if (!prereqStr.empty())
+        // Parse data based on current section
+        if (currentSection == "STUDENTS")
         {
-            stringstream prereqStream(prereqStr);
-            string prereqId;
-            while (getline(prereqStream, prereqId, ';'))
+            // Format: ID|Name|Department|Year|Course1;Course2;Course3
+            stringstream ss(line);
+            string id, name, dept, yearStr, coursesStr;
+
+            getline(ss, id, '|');
+            getline(ss, name, '|');
+            getline(ss, dept, '|');
+            getline(ss, yearStr, '|');
+            getline(ss, coursesStr);
+
+            int year = stoi(yearStr);
+            Student student(id, name, dept, year);
+
+            // Parse completed courses
+            if (!coursesStr.empty())
             {
-                prereqId = trim(prereqId);
-                if (!prereqId.empty())
+                stringstream courseStream(coursesStr);
+                string courseId;
+                while (getline(courseStream, courseId, ';'))
                 {
-                    course.addPrerequisite(prereqId);
+                    if (!courseId.empty())
+                        student.addCompletedCourse(courseId);
                 }
             }
+
+            students[id] = student;
         }
-
-        courses[id] = course;
-        loadedCount++;
-    }
-
-    file.close();
-    cout << " Loaded " << loadedCount << " courses from " << filename << endl;
-    return true;
-}
-
-bool DataBase::loadFacultyFromFile(string filename)
-{
-    ifstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot open file " << filename << endl;
-        return false;
-    }
-
-    string line;
-    int loadedCount = 0;
-
-    // Skip header
-    getline(file, line);
-    if (line.find("FacultyID") == string::npos)
-    {
-        file.clear();
-        file.seekg(0);
-    }
-
-    // Format: FacultyID,Name,Department,AssignedCourses(separated by semicolons)
-    // Example: F001,Dr. Smith,CS,CS101;CS201
-    while (getline(file, line))
-    {
-        if (line.empty() || line[0] == '#')
-            continue;
-
-        stringstream ss(line);
-        string id, name, dept, coursesStr;
-
-        getline(ss, id, ',');
-        getline(ss, name, ',');
-        getline(ss, dept, ',');
-        getline(ss, coursesStr);
-
-        id = trim(id);
-        name = trim(name);
-        dept = trim(dept);
-        coursesStr = trim(coursesStr);
-
-        Faculty faculty(id, name, dept);
-
-        // Parse assigned courses
-        if (!coursesStr.empty())
+        else if (currentSection == "COURSES")
         {
-            stringstream courseStream(coursesStr);
-            string courseId;
-            while (getline(courseStream, courseId, ';'))
+            // Format: ID|Name|Credits|Prereq1;Prereq2;Prereq3
+            stringstream ss(line);
+            string id, name, creditsStr, prereqStr;
+
+            getline(ss, id, '|');
+            getline(ss, name, '|');
+            getline(ss, creditsStr, '|');
+            getline(ss, prereqStr);
+
+            int credits = stoi(creditsStr);
+            Courses course(id, name, credits);
+
+            // Parse prerequisites
+            if (!prereqStr.empty())
             {
-                courseId = trim(courseId);
-                if (!courseId.empty())
+                stringstream prereqStream(prereqStr);
+                string prereqId;
+                while (getline(prereqStream, prereqId, ';'))
                 {
-                    faculty.assignCourse(courseId);
+                    if (!prereqId.empty())
+                        course.addPrerequisite(prereqId);
                 }
             }
+
+            courses[id] = course;
         }
-
-        faculties[id] = faculty;
-        loadedCount++;
-    }
-
-    file.close();
-    cout << " Loaded " << loadedCount << " faculty members from " << filename << endl;
-    return true;
-}
-
-bool DataBase::loadRoomsFromFile(string filename)
-{
-    ifstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot open file " << filename << endl;
-        return false;
-    }
-
-    string line;
-    int loadedCount = 0;
-
-    // Skip header
-    getline(file, line);
-    if (line.find("RoomID") == string::npos)
-    {
-        file.clear();
-        file.seekg(0);
-    }
-
-    // Format: RoomID,Type,Capacity
-    // Example: R101,Lecture,50
-    while (getline(file, line))
-    {
-        if (line.empty() || line[0] == '#')
-            continue;
-
-        stringstream ss(line);
-        string id, type, capacityStr;
-
-        getline(ss, id, ',');
-        getline(ss, type, ',');
-        getline(ss, capacityStr);
-
-        id = trim(id);
-        type = trim(type);
-        capacityStr = trim(capacityStr);
-
-        int capacity = stoi(capacityStr);
-        Rooms room(id, type, capacity);
-
-        rooms[id] = room;
-        loadedCount++;
-    }
-
-    file.close();
-    cout << " Loaded " << loadedCount << " rooms from " << filename << endl;
-    return true;
-}
-
-bool DataBase::loadTimeSlotsFromFile(string filename)
-{
-    ifstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot open file " << filename << endl;
-        return false;
-    }
-
-    string line;
-    int loadedCount = 0;
-
-    // Skip header
-    getline(file, line);
-    if (line.find("TimeSlotID") == string::npos)
-    {
-        file.clear();
-        file.seekg(0);
-    }
-
-    // Format: TimeSlotID,Day,StartTime,EndTime
-    // Example: T001,Monday,09:00,10:30
-    while (getline(file, line))
-    {
-        if (line.empty() || line[0] == '#')
-            continue;
-
-        stringstream ss(line);
-        string id, day, startTime, endTime;
-
-        getline(ss, id, ',');
-        getline(ss, day, ',');
-        getline(ss, startTime, ',');
-        getline(ss, endTime);
-
-        id = trim(id);
-        day = trim(day);
-        startTime = trim(startTime);
-        endTime = trim(endTime);
-
-        TimeSlots timeSlot(id, day, startTime, endTime);
-        timeSlots[id] = timeSlot;
-        loadedCount++;
-    }
-
-    file.close();
-    cout << " Loaded " << loadedCount << " time slots from " << filename << endl;
-    return true;
-}
-
-bool DataBase::loadEnrollmentsFromFile(string filename)
-{
-    ifstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot open file " << filename << endl;
-        return false;
-    }
-
-    string line;
-    int loadedCount = 0;
-
-    // Skip header
-    getline(file, line);
-    if (line.find("StudentID") == string::npos)
-    {
-        file.clear();
-        file.seekg(0);
-    }
-
-    // Format: StudentID,CourseID,TimeSlotID,SemesterID
-    // Example: S001,CS101,T001,SEM001
-    while (getline(file, line))
-    {
-        if (line.empty() || line[0] == '#')
-            continue;
-
-        stringstream ss(line);
-        string studentId, courseId, timeSlotId, semesterId;
-
-        getline(ss, studentId, ',');
-        getline(ss, courseId, ',');
-        getline(ss, timeSlotId, ',');
-        getline(ss, semesterId);
-
-        studentId = trim(studentId);
-        courseId = trim(courseId);
-        timeSlotId = trim(timeSlotId);
-        semesterId = trim(semesterId);
-
-        Enrollment enrollment(studentId, courseId, timeSlotId, semesterId);
-        enrollments.push_back(enrollment);
-        loadedCount++;
-    }
-
-    file.close();
-    cout << " Loaded " << loadedCount << " enrollments from " << filename << endl;
-    return true;
-}
-
-bool DataBase::loadDepartmentsFromFile(string filename)
-{
-    ifstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot open file " << filename << endl;
-        return false;
-    }
-
-    string line;
-    int loadedCount = 0;
-
-    // Skip header
-    getline(file, line);
-    if (line.find("DepartmentID") == string::npos)
-    {
-        file.clear();
-        file.seekg(0);
-    }
-
-    // Format: DepartmentID,Name,StudentIDs(separated by semicolons)
-    // Example: D001,Computer Science,S001;S002;S003
-    while (getline(file, line))
-    {
-        if (line.empty() || line[0] == '#')
-            continue;
-
-        stringstream ss(line);
-        string id, name, studentIdsStr;
-
-        getline(ss, id, ',');
-        getline(ss, name, ',');
-        getline(ss, studentIdsStr);
-
-        id = trim(id);
-        name = trim(name);
-        studentIdsStr = trim(studentIdsStr);
-
-        Department department(id, name);
-
-        // Parse student IDs
-        if (!studentIdsStr.empty())
+        else if (currentSection == "FACULTY")
         {
-            stringstream studentStream(studentIdsStr);
-            string studentId;
-            while (getline(studentStream, studentId, ';'))
+            // Format: ID|Name|Department|Course1;Course2;Course3
+            stringstream ss(line);
+            string id, name, dept, coursesStr;
+
+            getline(ss, id, '|');
+            getline(ss, name, '|');
+            getline(ss, dept, '|');
+            getline(ss, coursesStr);
+
+            Faculty faculty(id, name, dept);
+
+            // Parse assigned courses
+            if (!coursesStr.empty())
             {
-                studentId = trim(studentId);
-                if (!studentId.empty())
+                stringstream courseStream(coursesStr);
+                string courseId;
+                while (getline(courseStream, courseId, ';'))
                 {
-                    department.addStudent(studentId);
+                    if (!courseId.empty())
+                        faculty.assignCourse(courseId);
                 }
             }
+
+            faculties[id] = faculty;
         }
+        else if (currentSection == "ROOMS")
+        {
+            // Format: ID|Type|Capacity
+            stringstream ss(line);
+            string id, type, capacityStr;
 
-        departments[id] = department;
-        loadedCount++;
+            getline(ss, id, '|');
+            getline(ss, type, '|');
+            getline(ss, capacityStr);
+
+            int capacity = stoi(capacityStr);
+            Rooms room(id, type, capacity);
+
+            rooms[id] = room;
+        }
+        else if (currentSection == "TIMESLOTS")
+        {
+            // Format: ID|Day|StartTime|EndTime
+            stringstream ss(line);
+            string id, day, startTime, endTime;
+
+            getline(ss, id, '|');
+            getline(ss, day, '|');
+            getline(ss, startTime, '|');
+            getline(ss, endTime);
+
+            TimeSlots timeSlot(id, day, startTime, endTime);
+            timeSlots[id] = timeSlot;
+        }
+        else if (currentSection == "ENROLLMENTS")
+        {
+            // Format: StudentID|CourseID|TimeSlotID|SemesterID
+            stringstream ss(line);
+            string studentId, courseId, timeSlotId, semesterId;
+
+            getline(ss, studentId, '|');
+            getline(ss, courseId, '|');
+            getline(ss, timeSlotId, '|');
+            getline(ss, semesterId);
+
+            Enrollment enrollment(studentId, courseId, timeSlotId, semesterId);
+            enrollments.push_back(enrollment);
+        }
+        else if (currentSection == "DEPARTMENTS")
+        {
+            // Format: ID|Name|Student1;Student2;Student3
+            stringstream ss(line);
+            string id, name, studentIdsStr;
+
+            getline(ss, id, '|');
+            getline(ss, name, '|');
+            getline(ss, studentIdsStr);
+
+            Department department(id, name);
+
+            // Parse student IDs
+            if (!studentIdsStr.empty())
+            {
+                stringstream studentStream(studentIdsStr);
+                string studentId;
+                while (getline(studentStream, studentId, ';'))
+                {
+                    if (!studentId.empty())
+                        department.addStudent(studentId);
+                }
+            }
+
+            departments[id] = department;
+        }
+        else if (currentSection == "SEMESTERS")
+        {
+            // Format: ID|Name|StartDate|EndDate
+            stringstream ss(line);
+            string id, name, startDate, endDate;
+
+            getline(ss, id, '|');
+            getline(ss, name, '|');
+            getline(ss, startDate, '|');
+            getline(ss, endDate);
+
+            Semester semester(id, name, startDate, endDate);
+            semesters[id] = semester;
+        }
     }
 
     file.close();
-    cout << " Loaded " << loadedCount << " departments from " << filename << endl;
+
+    cout << " Loaded data from " << filename << endl;
+    cout << "  Students: " << students.size() << endl;
+    cout << "  Courses: " << courses.size() << endl;
+    cout << "  Faculty: " << faculties.size() << endl;
+    cout << "  Rooms: " << rooms.size() << endl;
+    cout << "  Time Slots: " << timeSlots.size() << endl;
+    cout << "  Enrollments: " << enrollments.size() << endl;
+    cout << "  Departments: " << departments.size() << endl;
+    cout << "  Semesters: " << semesters.size() << endl;
+
+    buildPrerequisiteGraph();
     return true;
 }
 
-bool DataBase::loadSemestersFromFile(string filename)
-{
-    ifstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot open file " << filename << endl;
-        return false;
-    }
-
-    string line;
-    int loadedCount = 0;
-
-    // Skip header
-    getline(file, line);
-    if (line.find("SemesterID") == string::npos)
-    {
-        file.clear();
-        file.seekg(0);
-    }
-
-    // Format: SemesterID,Name,StartDate,EndDate
-    // Example: SEM001,Fall 2024,2024-08-15,2024-12-15
-    while (getline(file, line))
-    {
-        if (line.empty() || line[0] == '#')
-            continue;
-
-        stringstream ss(line);
-        string id, name, startDate, endDate;
-
-        getline(ss, id, ',');
-        getline(ss, name, ',');
-        getline(ss, startDate, ',');
-        getline(ss, endDate);
-
-        id = trim(id);
-        name = trim(name);
-        startDate = trim(startDate);
-        endDate = trim(endDate);
-
-        Semester semester(id, name, startDate, endDate);
-        semesters[id] = semester;
-        loadedCount++;
-    }
-
-    file.close();
-    cout << " Loaded " << loadedCount << " semesters from " << filename << endl;
-    return true;
-}
-
-//  SAVE FUNCTIONS 
-
-bool DataBase::saveStudentsToFile(string filename) const
+bool DataBase::saveToFile(string filename) const
 {
     ofstream file(filename);
     if (!file.is_open())
     {
-        cout << "Error: Cannot create file " << filename << endl;
+        cout << " Error: Cannot create file " << filename << endl;
         return false;
     }
 
-    // Write header
-    file << "# Students Database File\n";
-    file << "# Format: StudentID,Name,Department,Year,CompletedCourses\n\n";
-    file << "StudentID,Name,Department,Year,CompletedCourses\n";
-
+    // Save Students
+    file << "[STUDENTS]\n";
     for (const auto& pair : students)
     {
         const Student& s = pair.second;
-        file << s.getId() << ","
-            << s.getName() << ","
-            << s.getDepartment() << ","
-            << s.getYear() << ",";
+        file << s.getId() << "|"
+            << s.getName() << "|"
+            << s.getDepartment() << "|"
+            << s.getYear() << "|";
 
-        // Write completed courses
         const vector<string>& completed = s.getCompletedCourses();
         for (size_t i = 0; i < completed.size(); i++)
         {
@@ -914,30 +684,14 @@ bool DataBase::saveStudentsToFile(string filename) const
         file << "\n";
     }
 
-    file.close();
-    cout << " Saved " << students.size() << " students to " << filename << endl;
-    return true;
-}
-
-bool DataBase::saveCoursesToFile(string filename) const
-{
-    ofstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot create file " << filename << endl;
-        return false;
-    }
-
-    file << "# Courses Database File\n";
-    file << "# Format: CourseID,Name,Credits,Prerequisites\n\n";
-    file << "CourseID,Name,Credits,Prerequisites\n";
-
+    // Save Courses
+    file << "\n[COURSES]\n";
     for (const auto& pair : courses)
     {
         const Courses& c = pair.second;
-        file << c.getId() << ","
-            << c.getName() << ","
-            << c.getCredits() << ",";
+        file << c.getId() << "|"
+            << c.getName() << "|"
+            << c.getCredits() << "|";
 
         const vector<string>& prereqs = c.getPrerequisites();
         for (size_t i = 0; i < prereqs.size(); i++)
@@ -949,30 +703,14 @@ bool DataBase::saveCoursesToFile(string filename) const
         file << "\n";
     }
 
-    file.close();
-    cout << " Saved " << courses.size() << " courses to " << filename << endl;
-    return true;
-}
-
-bool DataBase::saveFacultyToFile(string filename) const
-{
-    ofstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot create file " << filename << endl;
-        return false;
-    }
-
-    file << "# Faculty Database File\n";
-    file << "# Format: FacultyID,Name,Department,AssignedCourses\n\n";
-    file << "FacultyID,Name,Department,AssignedCourses\n";
-
+    // Save Faculty
+    file << "\n[FACULTY]\n";
     for (const auto& pair : faculties)
     {
         const Faculty& f = pair.second;
-        file << f.getId() << ","
-            << f.getName() << ","
-            << f.getDepartment() << ",";
+        file << f.getId() << "|"
+            << f.getName() << "|"
+            << f.getDepartment() << "|";
 
         const vector<string>& courses = f.getAssignedCourses();
         for (size_t i = 0; i < courses.size(); i++)
@@ -984,108 +722,44 @@ bool DataBase::saveFacultyToFile(string filename) const
         file << "\n";
     }
 
-    file.close();
-    cout << " Saved " << faculties.size() << " faculty members to " << filename << endl;
-    return true;
-}
-
-bool DataBase::saveRoomsToFile(string filename) const
-{
-    ofstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot create file " << filename << endl;
-        return false;
-    }
-
-    file << "# Rooms Database File\n";
-    file << "# Format: RoomID,Type,Capacity\n\n";
-    file << "RoomID,Type,Capacity\n";
-
+    // Save Rooms
+    file << "\n[ROOMS]\n";
     for (const auto& pair : rooms)
     {
         const Rooms& r = pair.second;
-        file << r.getId() << ","
-            << r.getType() << ","
+        file << r.getId() << "|"
+            << r.getType() << "|"
             << r.getCapacity() << "\n";
     }
 
-    file.close();
-    cout << " Saved " << rooms.size() << " rooms to " << filename << endl;
-    return true;
-}
-
-bool DataBase::saveTimeSlotsToFile(string filename) const
-{
-    ofstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot create file " << filename << endl;
-        return false;
-    }
-
-    file << "# Time Slots Database File\n";
-    file << "# Format: TimeSlotID,Day,StartTime,EndTime\n\n";
-    file << "TimeSlotID,Day,StartTime,EndTime\n";
-
+    // Save Time Slots
+    file << "\n[TIMESLOTS]\n";
     for (const auto& pair : timeSlots)
     {
         const TimeSlots& t = pair.second;
-        file << t.getId() << ","
-            << t.getDay() << ","
-            << t.getStartTime() << ","
+        file << t.getId() << "|"
+            << t.getDay() << "|"
+            << t.getStartTime() << "|"
             << t.getEndTime() << "\n";
     }
 
-    file.close();
-    cout << " Saved " << timeSlots.size() << " time slots to " << filename << endl;
-    return true;
-}
-
-bool DataBase::saveEnrollmentsToFile(string filename) const
-{
-    ofstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot create file " << filename << endl;
-        return false;
-    }
-
-    file << "# Enrollments Database File\n";
-    file << "# Format: StudentID,CourseID,TimeSlotID,SemesterID\n\n";
-    file << "StudentID,CourseID,TimeSlotID,SemesterID\n";
-
+    // Save Enrollments
+    file << "\n[ENROLLMENTS]\n";
     for (const Enrollment& e : enrollments)
     {
-        file << e.getStudentId() << ","
-            << e.getCourseId() << ","
-            << e.getTimeSlotId() << ","
+        file << e.getStudentId() << "|"
+            << e.getCourseId() << "|"
+            << e.getTimeSlotId() << "|"
             << e.getSemesterId() << "\n";
     }
 
-    file.close();
-    cout << " Saved " << enrollments.size() << " enrollments to " << filename << endl;
-    return true;
-}
-
-bool DataBase::saveDepartmentsToFile(string filename) const
-{
-    ofstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot create file " << filename << endl;
-        return false;
-    }
-
-    file << "# Departments Database File\n";
-    file << "# Format: DepartmentID,Name,StudentIDs\n\n";
-    file << "DepartmentID,Name,StudentIDs\n";
-
+    // Save Departments
+    file << "\n[DEPARTMENTS]\n";
     for (const auto& pair : departments)
     {
         const Department& d = pair.second;
-        file << d.getId() << ","
-            << d.getName() << ",";
+        file << d.getId() << "|"
+            << d.getName() << "|";
 
         const vector<string>& students = d.getStudents();
         for (size_t i = 0; i < students.size(); i++)
@@ -1097,94 +771,28 @@ bool DataBase::saveDepartmentsToFile(string filename) const
         file << "\n";
     }
 
-    file.close();
-    cout << " Saved " << departments.size() << " departments to " << filename << endl;
-    return true;
-}
-
-bool DataBase::saveSemestersToFile(string filename) const
-{
-    ofstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot create file " << filename << endl;
-        return false;
-    }
-
-    file << "# Semesters Database File\n";
-    file << "# Format: SemesterID,Name,StartDate,EndDate\n\n";
-    file << "SemesterID,Name,StartDate,EndDate\n";
-
+    // Save Semesters
+    file << "\n[SEMESTERS]\n";
     for (const auto& pair : semesters)
     {
         const Semester& s = pair.second;
-        file << s.getId() << ","
-            << s.getName() << ","
-            << s.getStartDate() << ","
+        file << s.getId() << "|"
+            << s.getName() << "|"
+            << s.getStartDate() << "|"
             << s.getEndDate() << "\n";
     }
 
     file.close();
-    cout << " Saved " << semesters.size() << " semesters to " << filename << endl;
+
+    cout << "✓ Saved all data to " << filename << endl;
+    cout << "  Students: " << students.size() << endl;
+    cout << "  Courses: " << courses.size() << endl;
+    cout << "  Faculty: " << faculties.size() << endl;
+    cout << "  Rooms: " << rooms.size() << endl;
+    cout << "  Time Slots: " << timeSlots.size() << endl;
+    cout << "  Enrollments: " << enrollments.size() << endl;
+    cout << "  Departments: " << departments.size() << endl;
+    cout << "  Semesters: " << semesters.size() << endl;
+
     return true;
-}
-
-//  BULK LOAD/SAVE
-
-bool DataBase::loadAllData(string directory)
-{
-    cout << "\n========== LOADING ALL DATA ==========\n";
-
-    bool allSuccess = true;
-
-    allSuccess &= loadStudentsFromFile(directory + "/students.txt");
-    allSuccess &= loadCoursesFromFile(directory + "/courses.txt");
-    allSuccess &= loadFacultyFromFile(directory + "/faculty.txt");
-    allSuccess &= loadRoomsFromFile(directory + "/rooms.txt");
-    allSuccess &= loadTimeSlotsFromFile(directory + "/timeslots.txt");
-    allSuccess &= loadEnrollmentsFromFile(directory + "/enrollments.txt");
-    allSuccess &= loadDepartmentsFromFile(directory + "/departments.txt");
-    allSuccess &= loadSemestersFromFile(directory + "/semesters.txt");
-
-    if (allSuccess)
-    {
-        cout << "\n All data loaded successfully!" << endl;
-        buildPrerequisiteGraph();
-        cout << " Prerequisite graph built." << endl;
-    }
-    else
-    {
-        cout << "\n Some files could not be loaded." << endl;
-    }
-
-    cout << "======================================\n\n";
-    return allSuccess;
-}
-
-bool DataBase::saveAllData(string directory) const
-{
-    cout << "\n========== SAVING ALL DATA ==========\n";
-
-    bool allSuccess = true;
-
-    allSuccess &= saveStudentsToFile(directory + "/students.txt");
-    allSuccess &= saveCoursesToFile(directory + "/courses.txt");
-    allSuccess &= saveFacultyToFile(directory + "/faculty.txt");
-    allSuccess &= saveRoomsToFile(directory + "/rooms.txt");
-    allSuccess &= saveTimeSlotsToFile(directory + "/timeslots.txt");
-    allSuccess &= saveEnrollmentsToFile(directory + "/enrollments.txt");
-    allSuccess &= saveDepartmentsToFile(directory + "/departments.txt");
-    allSuccess &= saveSemestersToFile(directory + "/semesters.txt");
-
-    if (allSuccess)
-    {
-        cout << "\n All data saved successfully to " << directory << "/" << endl;
-    }
-    else
-    {
-        cout << "\n Some files could not be saved." << endl;
-    }
-
-    cout << "=====================================\n\n";
-    return allSuccess;
 }

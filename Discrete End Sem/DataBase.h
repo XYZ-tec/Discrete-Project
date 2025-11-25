@@ -68,28 +68,8 @@ public:
     vector<string> getEnrolledStudents(string courseId);
     vector<string> getStudentCourses(string studentId);
 
-    // Load from files
-    bool loadStudentsFromFile(string filename);
-    bool loadCoursesFromFile(string filename);
-    bool loadFacultyFromFile(string filename);
-    bool loadRoomsFromFile(string filename);
-    bool loadTimeSlotsFromFile(string filename);
-    bool loadEnrollmentsFromFile(string filename);
-    bool loadDepartmentsFromFile(string filename);
-    bool loadSemestersFromFile(string filename);
-
-    // Save to files
-    bool saveStudentsToFile(string filename) const;
-    bool saveCoursesToFile(string filename) const;
-    bool saveFacultyToFile(string filename) const;
-    bool saveRoomsToFile(string filename) const;
-    bool saveTimeSlotsToFile(string filename) const;
-    bool saveEnrollmentsToFile(string filename) const;
-    bool saveDepartmentsToFile(string filename) const;
-    bool saveSemestersToFile(string filename) const;
-
-    bool loadAllData(string directory = "data");
-    bool saveAllData(string directory = "data") const;
+    bool loadFromFile(string filename = "university_data.txt");
+    bool saveToFile(string filename = "university_data.txt") const;
 };
 
 #endif
