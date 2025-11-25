@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AlgorithmicEfficiency.h" />
     <ClInclude Include="ConsistencyChecker.h" />
     <ClInclude Include="Courses.h" />
     <ClInclude Include="CourseScheduling.h" />
@@ -143,6 +144,7 @@
     <ClInclude Include="Transcript.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AlgorithmicEfficiency.cpp" />
     <ClCompile Include="ConsistencyChecker.cpp" />
     <ClCompile Include="Courses.cpp" />
     <ClCompile Include="CourseScheduling.cpp" />
