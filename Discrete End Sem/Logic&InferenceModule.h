@@ -74,20 +74,10 @@ private:
 public:
     LogicEngine(DataBase* database) : db(database), nextRuleId(1), nextFactId(1) {}
 
-    // Load rules from file
-    bool loadRulesFromFile(string filename);
-
-    // Save rules to file
-    bool saveRulesToFile(string filename) const;
-
-    // Load facts from file
-    bool loadFactsFromFile(string filename);
-
-    // Save facts to file
-    bool saveFactsToFile(string filename) const;
-
-    // Save conflicts to file
-    bool saveConflictsToFile(string filename) const;
+    bool loadRules(string filename = "logic_rules.txt");
+    bool saveRules(string filename = "logic_rules.txt") const;
+    bool loadFacts(string filename = "logic_facts.txt");
+    bool saveFacts(string filename = "logic_facts.txt") const;
 
     // Add a logical rule
     string addRule(string condition, string consequence, string ruleType = "IMPLIES");

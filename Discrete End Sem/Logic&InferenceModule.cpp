@@ -1,54 +1,50 @@
 ﻿#include "Logic&InferenceModule.h"
 #include <algorithm>
-bool LogicEngine::loadRulesFromFile(string filename) 
+
+bool LogicEngine::loadRules(string filename)
 {
     ifstream file(filename);
-
     if (!file.is_open())
     {
-        cout << "Error: Cannot open file " << filename << endl;
+        cout << " No existing rules file. Starting fresh.\n";
         return false;
     }
 
     string line;
     int loadedCount = 0;
 
-    // File format: RuleID,Condition,Consequence,RuleType,IsActive
-    // Example: R1,Prof_Smith_teaches_CS101,Lab_must_be_LabA,IMPLIES,1
-
     while (getline(file, line))
     {
-        // Skip empty lines and comments
-        if (line.empty() || line[0] == '#') 
-            continue; 
+        if (line.empty()) continue;
+
+        // Simple format: RuleID|Condition|Consequence|Type|Active
+        // Example: R1|Prof_Smith_teaches_CS101|Lab_must_be_LabA|IMPLIES|1
 
         stringstream ss(line);
         string ruleId, condition, consequence, ruleType, activeStr;
 
-        getline(ss, ruleId, ',');
-        getline(ss, condition, ',');
-        getline(ss, consequence, ',');
-        getline(ss, ruleType, ',');
-        getline(ss, activeStr, ',');
+        getline(ss, ruleId, '|');
+        getline(ss, condition, '|');
+        getline(ss, consequence, '|');
+        getline(ss, ruleType, '|');
+        getline(ss, activeStr);
 
         Rule rule;
-        rule.ruleId = trim(ruleId);
-        rule.condition = trim(condition);
-        rule.consequence = trim(consequence);
-        rule.ruleType = trim(ruleType);
-        rule.isActive = (trim(activeStr) == "1" || trim(activeStr) == "true");
+        rule.ruleId = ruleId;
+        rule.condition = condition;
+        rule.consequence = consequence;
+        rule.ruleType = ruleType;
+        rule.isActive = (activeStr == "1");
 
         rules[rule.ruleId] = rule;
         loadedCount++;
 
         // Update nextRuleId
-        if (rule.ruleId[0] == 'R') 
+        if (rule.ruleId[0] == 'R')
         {
             int id = stoi(rule.ruleId.substr(1));
             if (id >= nextRuleId)
-            {
                 nextRuleId = id + 1;
-            }
         }
     }
 
@@ -57,28 +53,22 @@ bool LogicEngine::loadRulesFromFile(string filename)
     return true;
 }
 
-bool LogicEngine::saveRulesToFile(string filename) const
+bool LogicEngine::saveRules(string filename) const
 {
     ofstream file(filename);
-
-    if (!file.is_open()) 
+    if (!file.is_open())
     {
-        cout << "Error: Cannot create file " << filename << endl;
+        cout << " Error: Cannot create file " << filename << endl;
         return false;
     }
-
-    // Write header
-    file << "# Logic Rules File\n";
-    file << "# Format: RuleID,Condition,Consequence,RuleType,IsActive\n";
-    file << "# RuleType: IMPLIES, AND, OR, NOT\n\n";
 
     for (const auto& pair : rules)
     {
         const Rule& rule = pair.second;
-        file << rule.ruleId << ","
-            << rule.condition << ","
-            << rule.consequence << ","
-            << rule.ruleType << ","
+        file << rule.ruleId << "|"
+            << rule.condition << "|"
+            << rule.consequence << "|"
+            << rule.ruleType << "|"
             << (rule.isActive ? "1" : "0") << "\n";
     }
 
@@ -87,38 +77,36 @@ bool LogicEngine::saveRulesToFile(string filename) const
     return true;
 }
 
-bool LogicEngine::loadFactsFromFile(string filename) 
+bool LogicEngine::loadFacts(string filename)
 {
     ifstream file(filename);
-
-    if (!file.is_open()) 
+    if (!file.is_open())
     {
-        cout << "Error: Cannot open file " << filename << endl;
+        cout << " No existing facts file. Starting fresh.\n";
         return false;
     }
 
     string line;
     int loadedCount = 0;
 
-    // File format: FactID,Statement,TruthValue
-    // Example: F1,Prof_Smith_teaches_CS101,1
-
-    while (getline(file, line)) 
+    while (getline(file, line))
     {
-        if (line.empty() || line[0] == '#') 
-            continue;
+        if (line.empty()) continue;
+
+        // Simple format: FactID|Statement|TruthValue
+        // Example: F1|Prof_Smith_teaches_CS101|1
 
         stringstream ss(line);
         string factId, statement, valueStr;
 
-        getline(ss, factId, ',');
-        getline(ss, statement, ',');
-        getline(ss, valueStr, ',');
+        getline(ss, factId, '|');
+        getline(ss, statement, '|');
+        getline(ss, valueStr);
 
         Fact fact;
-        fact.factId = trim(factId);
-        fact.statement = trim(statement);
-        fact.truthValue = (trim(valueStr) == "1" || trim(valueStr) == "true");
+        fact.factId = factId;
+        fact.statement = statement;
+        fact.truthValue = (valueStr == "1");
 
         facts[fact.factId] = fact;
         loadedCount++;
@@ -128,9 +116,7 @@ bool LogicEngine::loadFactsFromFile(string filename)
         {
             int id = stoi(fact.factId.substr(1));
             if (id >= nextFactId)
-            {
                 nextFactId = id + 1;
-            }
         }
     }
 
@@ -139,70 +125,25 @@ bool LogicEngine::loadFactsFromFile(string filename)
     return true;
 }
 
-bool LogicEngine::saveFactsToFile(string filename) const 
+bool LogicEngine::saveFacts(string filename) const
 {
     ofstream file(filename);
-
     if (!file.is_open())
     {
-        cout << "Error: Cannot create file " << filename << endl;
+        cout << " Error: Cannot create file " << filename << endl;
         return false;
     }
-
-    // Write header
-    file << "# Logic Facts File\n";
-    file << "# Format: FactID,Statement,TruthValue\n";
-    file << "# TruthValue: 1 (true) or 0 (false)\n\n";
 
     for (const auto& pair : facts)
     {
         const Fact& fact = pair.second;
-        file << fact.factId << ","
-            << fact.statement << ","
+        file << fact.factId << "|"
+            << fact.statement << "|"
             << (fact.truthValue ? "1" : "0") << "\n";
     }
 
     file.close();
     cout << " Saved " << facts.size() << " facts to " << filename << endl;
-    return true;
-}
-
-bool LogicEngine::saveConflictsToFile(string filename) const 
-{
-    ofstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "Error: Cannot create file " << filename << endl;
-        return false;
-    }
-
-    file << "========== CONFLICT REPORT ==========\n";
-    file << "Total Conflicts: " << conflicts.size() << "\n\n";
-
-    if (conflicts.empty())
-    {
-        file << "No conflicts detected.\n";
-    }
-    else 
-    {
-        for (size_t i = 0; i < conflicts.size(); i++)
-        {
-            const Conflict& c = conflicts[i];
-            file << "Conflict " << (i + 1) << ":\n";
-            file << "  Type: " << c.conflictType << "\n";
-            file << "  Severity: " << c.severity << "\n";
-            file << "  Description: " << c.description << "\n";
-            file << "  Entities: ";
-            for (const string& entity : c.involvedEntities) 
-            {
-                file << entity << " ";
-            }
-            file << "\n\n";
-        }
-    }
-
-    file.close();
-    cout << " Saved conflict report to " << filename << endl;
     return true;
 }
 
