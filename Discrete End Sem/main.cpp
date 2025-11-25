@@ -43,7 +43,7 @@ void studentMenu();
 void courseMenu();
 void facultyMenu();
 void enrollmentMenu();
-void verificationMenu()
+void verificationMenu();
 void algorithmicEfficiencyMenu();
 void inductionMenu();
 void logicMenu();
@@ -844,8 +844,6 @@ void verificationMenu()
             // Build data structures for check
             map<string, vector<string>> prereqs;
             map<string, set<string>> studentCourses;
-
-            // This is a simplified example - you'd need to populate these from db
             cout << " Feature requires additional data setup\n";
             setcolor(MENU_OPTION_COLOR);
             pauseScreen();
