@@ -33,15 +33,15 @@ int main()
 {
     displayBanner();
 
-    // Load existing data
-    cout << "Loading existing data from 'data' directory...\n";
-    db.loadAllData("data");
+    cout << "Loading existing data...\n";
+    db.loadFromFile("university_data.txt");
 
     mainMenu();
 
     // Save data before exit
+   
     cout << "\nSaving all data...\n";
-    db.saveAllData("data");
+    db.saveToFile("university_data.txt");
 
     cout << "\nThank you for using our little project not little though\n";
     cout << "Developed for FAST University - Discrete Mathematics Project\n\n";
@@ -157,11 +157,13 @@ void dataManagementMenu()
             enrollmentMenu();
             break;
         case 5:
-            db.loadAllData("data");
+            cout << "\nLoading data from file...\n";
+            db.loadFromFile("university_data.txt");
             pauseScreen();
             break;
         case 6:
-            db.saveAllData("data");
+            cout << "\nSaving data to file...\n";
+            db.saveToFile("university_data.txt");
             pauseScreen();
             break;
         case 0:
