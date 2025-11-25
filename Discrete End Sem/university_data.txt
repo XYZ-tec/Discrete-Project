@@ -1,0 +1,25 @@
+[STUDENTS]
+1001|Azka|Se|2024|cs1005
+1002|laiba|se|2024|
+
+[COURSES]
+cs1001|programming fundamentals|3|
+cs1004|oop|3|
+cs1005|data structures|3|cs1002;cs1004
+ee1001|coal|3|
+
+[FACULTY]
+2001|ali raza|se|
+2004|qamar zaman|se|cs1005
+2007|amir rasheed|se|
+
+[ROOMS]
+
+[TIMESLOTS]
+
+[ENROLLMENTS]
+1001|cs1005|11:20|1
+
+[DEPARTMENTS]
+
+[SEMESTERS]

@@ -1,0 +1,5827 @@
+#pragma once
+#ifndef COURSES_H
+#define COURSES_H
+#include string
+#include vector
+#include iostream
+using namespace std;
+class Courses
+{
+private
+    string id;
+    string name;
+    int credits;
+    vectorstring prerequisites;   Set of prerequisite course IDs 
+
+public
+    Courses(string id, string name, int credits);
+    string getId() const;
+    string getName() const;
+    int getCredits() const;
+    void addPrerequisite(string prereqId);
+    const vectorstring& getPrerequisites() const;
+    void display() const;
+};
+#endif
+#pragma once
+#ifndef DATABASE_H
+#define DATABASE_H
+#includeiostream
+#include map
+#include vector
+#include queue
+#include set
+#include fstream
+#include sstream
+#include Student.h
+#include Courses.h
+#include Faculty.h
+#include Rooms.h
+#include TimeSlots.h
+#include Enrollment.h
+#include Transcript.h
+#include Department.h
+#include Semester.h
+using namespace std;
+class DataBase 
+{
+private
+    mapstring, Student students; 
+    mapstring, Courses courses;
+    mapstring, Faculty faculties;
+    mapstring, Rooms rooms;
+    mapstring, TimeSlots timeSlots;
+    vectorEnrollment enrollments;
+    mapstring, Transcript transcripts;
+    mapstring, Department departments;
+    mapstring, Semester semesters;
+    mapstring, vectorstring prerequisiteGraph;
+    string trim(const string& str) const;
+
+public
+    void addStudent(const Student& s);
+    void addCourse(const Courses& c);
+    void addFaculty(const Faculty& f);
+    void addRoom(const Rooms& r);
+    void addTimeSlot(const TimeSlots& t);
+    void addEnrollment(const Enrollment& e);
+    void addTranscript(const Transcript& t);
+    void addDepartment(const Department& d);
+    void addSemester(const Semester& s);
+
+    Student getStudent(string id);
+    Courses getCourse(string id);
+    Faculty getFaculty(string id);
+    Rooms getRoom(string id);
+    TimeSlots getTimeSlot(string id);
+    Department getDepartment(string id);
+    Semester getSemester(string id);
+
+    void displayAllStudents() const;
+    void displayAllCourses() const;
+    void displayAllFaculty() const;
+
+    bool checkPrerequisitesSatisfied(string studentId, string courseId);
+    void buildPrerequisiteGraph();
+    bool canEnroll(string studentId, string courseId);
+    vectorstring getAvailableCourses(string studentId);
+    vectorstring getValidCourseSequence();
+    setstring getAllPrerequisites(string courseId);
+    bool hasTimeConflict(string studentId, string courseId, string timeSlotId);
+    bool hasFacultyConflict(string facultyId, string timeSlotId);
+    bool hasCircularDependency();
+    vectorstring getEnrolledStudents(string courseId);
+    vectorstring getStudentCourses(string studentId);
+
+    bool loadFromFile(string filename = university_data.txt);
+    bool saveToFile(string filename = university_data.txt) const;
+
+
+     functions added for the testing purposes will comment them later
+
+    mapstring, Student& getAllStudents() { return students; }
+    mapstring, Courses& getAllCourses() { return courses; }
+    mapstring, Faculty& getAllFaculty() { return faculties; }
+    mapstring, Rooms& getAllRooms() { return rooms; }
+    mapstring, TimeSlots& getAllTimeSlots() { return timeSlots; }
+    vectorEnrollment& getAllEnrollments() { return enrollments; }
+};
+
+#endif
+#pragma once
+#ifndef DEPARTMENT_H
+#define DEPARTMENT_H
+#includeiostream
+#include string
+#include vector
+using namespace std;
+class Department 
+{
+private
+    string id;
+    string name;
+    vectorstring studentIds;   Set of student IDs in department
+
+public
+    Department() {}
+    Department(string id, string name);
+    string getId() const;
+    string getName() const;
+    void addStudent(string studentId);
+    const vectorstring& getStudents() const;
+    void display() const;
+};
+
+#endif
+#pragma once
+#ifndef ENROLLMENT_H
+#define ENROLLMENT_H
+#includeiostream
+#include string
+#include Student.h
+#include Courses.h
+#include TimeSlots.h
+using namespace std;
+class Enrollment
+{
+private
+    string studentId;
+    string courseId;
+    string timeSlotId;
+    string semesterId;
+
+public
+    Enrollment() {}
+    Enrollment(string sId, string cId, string tId, string semId);
+    string getStudentId() const;
+    string getCourseId() const;
+    string getTimeSlotId() const;
+    string getSemesterId() const;
+    void display() const;
+};
+
+#endif
+#pragma once
+#ifndef FACULTY_H
+#define FACULTY_H
+#include iostream
+#include string
+#include vector
+using namespace std;
+class Faculty
+{
+private
+    string id;
+    string name;
+    string department;
+    vectorstring assignedCourses;   Set of assigned course IDs
+
+public
+    Faculty() {}
+    Faculty(string id, string name, string dept);
+    string getId() const;
+    string getName() const;
+    string getDepartment() const;
+    void assignCourse(string courseId);
+    const vectorstring& getAssignedCourses() const;
+    void display() const;
+};
+
+#endif
+#pragma once
+#ifndef ROOMS_H
+#define ROOMS_H
+#includeiostream
+#include string
+using namespace std;
+class Rooms 
+{
+private
+    string id;
+    string type;   e.g Lecture or Lab etc
+    int capacity;
+
+public
+    Rooms() {}
+    Rooms(string id, string type, int capacity);
+    string getId() const;
+    string getType() const;
+    int getCapacity() const;
+    void display() const;
+};
+
+#endif
+#pragma once
+#ifndef SEMESTER_H
+#define SEMESTER_H
+#include iostream
+#include string
+using namespace std;
+class Semester 
+{
+private
+    string id;
+    string name;   e.g Fall 2023
+    string startDate;
+    string endDate;
+public
+    Semester() {}
+    Semester(string id, string name, string start, string end);
+    string getId() const;
+    string getName() const;
+    string getStartDate() const;
+    string getEndDate() const;
+    void display() const;
+};
+#endif
+#pragma once
+#ifndef STUDENT_H
+#define STUDENT_H
+#include string
+#include vector
+#include iostream
+using namespace std;
+class Student
+{
+private
+    string id;
+    string name;
+    string department;
+    int year;
+    vectorstring completedCourses;   Set of completed courses (discrete set)
+public
+    Student() {}
+    Student(string id, string name, string dept, int year);
+    string getId() const;
+    string getName() const;
+    string getDepartment() const;
+    int getYear() const;
+    void addCompletedCourse(string courseId);
+    bool hasCompletedCourse(string courseId) const;
+    void display() const;
+    const vectorstring& getCompletedCourses() const;
+};
+
+#endif
+#pragma once
+#ifndef TIMESLOTS_H
+#define TIMESLOTS_H
+#includeiostream
+#include string
+using namespace std;
+class TimeSlots
+{
+private
+    string id;
+    string day;
+    string startTime;
+    string endTime;
+
+public
+    TimeSlots() {}
+    TimeSlots(string id, string day, string start, string end);
+    string getId() const;
+    string getDay() const;
+    string getStartTime() const;
+    string getEndTime() const;
+    bool overlaps(const TimeSlots& other) const;   For conflict detection
+    void display() const;
+};
+
+#endif
+#pragma once
+#ifndef TRANSCRIPT_H
+#define TRANSCRIPT_H
+#includeiostream
+#include string
+#include vector
+#include Student.h
+using namespace std;
+class Transcript 
+{
+private
+    string studentId;
+    vectorpairstring, string grades;   For Pairing The Course ID and Grade e.g A B and so on
+
+public
+    Transcript() {}
+    Transcript(string sId);
+    string getStudentId() const;
+    void addGrade(string courseId, string grade);
+    double calculateGPA() const; 
+    void display() const;
+};
+
+#endif
+#pragma once
+#ifndef CONSISTENCY_CHECKER_H
+#define CONSISTENCY_CHECKER_H
+#include string
+#include vector
+#include set
+#include map
+#include utility
+using namespace std;
+class ConsistencyChecker
+{
+private
+    int dfsDepth(const string& node,
+        const mapstring, vectorstring& prerequisites,
+        mapstring, int& memo,
+        mapstring, int& visiting);
+public
+    ConsistencyChecker();
+
+    bool checkMissingPrerequisites(
+        const mapstring, vectorstring& prerequisites,
+        const mapstring, setstring& studentCourses
+    );
+
+    bool checkCourseOverlaps(
+        const mapstring, pairint, int& courseTimes,
+        const setstring& courses
+    );
+
+    bool checkStudentOverload(
+        const mapstring, int& courseCredits,
+        const mapstring, setstring& studentCourses,
+        int maxCredits
+    );
+
+    bool detectCircularPrerequisites(
+        const mapstring, vectorstring& prerequisites
+    );
+
+    bool detectDuplicateCourseAssignments(
+        const mapstring, setstring& facultyCourses,
+        const mapstring, setstring& roomCourses
+    );
+
+    bool validateStudentScheduleConflicts(
+        const mapstring, pairint, int& courseTimes,
+        const mapstring, setstring& studentCourses
+    );
+
+    bool checkFacultyCourseOverload(
+        const mapstring, setstring& facultyCourses,
+        const mapstring, int& courseCredits,
+        int maxCredits
+    );
+
+    bool checkRoomDoubleBooking(
+        const mapstring, pairint, int& courseTimes,
+        const mapstring, string& courseRoom
+    );
+
+    bool verifyRelationConsistency(
+        const mapstring, setstring& relation,
+        const setstring& codomain,
+        bool& isFunction,
+        bool& isInjective,
+        bool& isSurjective
+    );
+
+    bool checkEquivalentCoursesConsistency(
+        const vector setstring & groups,
+        const mapstring, vectorstring& prerequisites,
+        const mapstring, pairint, int& courseTimes
+    );
+
+    setstring detectUnreachableCourses(
+        const mapstring, vectorstring& prerequisites
+    );
+
+    bool validateLogicRules(
+        const vector pairstring, string & rules,
+        const setstring& currentState
+    );
+
+    bool checkPrerequisiteDepthLimit(
+        const mapstring, vectorstring& prerequisites,
+        int limit
+    );
+
+    int countCycles(const mapstring, vectorstring& prerequisites);
+
+};
+
+#endif
+#pragma once
+#ifndef COURSE_SCHEDULING_H
+#define COURSE_SCHEDULING_H
+
+#include string
+#include vector
+#include map
+using namespace std;
+
+class CourseScheduling
+{
+private
+    mapstring, vectorstring prereq;
+
+    bool canTake(string course, vectorstring& taken);
+    void generate(vectorstring& current, vectorstring& allCourses,
+        vectorvectorstring& result, vectorbool& used);
+
+public
+    CourseScheduling();
+
+    void addCourse(string course, vectorstring prerequisites);
+    void addPrerequisite(string course, string pre);
+    void removePrerequisite(string course, string pre);
+    void removeCourse(string course);
+
+    bool isCourseAvailable(string course);
+    vectorstring getAllCourses();
+    vectorstring getPrerequisites(string course);
+
+    bool checkPrerequisitesMet(string course, vectorstring completed);
+    int countPrerequisites(string course);
+
+    void printCourseInfo(string course);
+    void printAllCourses();
+
+    vectorvectorstring generateSchedules();
+};
+
+#endif
+
+#pragma once
+#ifndef FUNCTIONSMODULE_H
+#define FUNCTIONSMODULE_H
+#include iostream
+#include map
+#include set
+#include vector
+#include string
+using namespace std;
+
+class FunctionsModule
+{
+public
+     Function represented as map from domain to codomain
+    using Function = mapstring, string;
+
+     Check if mapping is a valid function (each input has exactly one output)
+    static bool isValidFunction(const Function& func, const setstring& domain);
+
+     Check if function is injective (one-to-one)
+    static bool isInjective(const Function& func);
+
+     Check if function is surjective (onto)
+    static bool isSurjective(const Function& func, const setstring& codomain);
+
+     Check if function is bijective (one-to-one and onto)
+    static bool isBijective(const Function& func, const setstring& codomain);
+
+     Compose two functions (g ∘ f)(x) = g(f(x))
+    static Function composeFunctions(const Function& f, const Function& g);
+
+     Get inverse function (only works for bijective functions)
+    static Function inverseFunction(const Function& func);
+
+     Get imagerange of function
+    static setstring getImage(const Function& func);
+
+     Get domain of function
+    static setstring getDomain(const Function& func);
+
+     Get preimage of an element (all inputs that map to given output)
+    static setstring getPreimage(const Function& func, const string& element);
+
+     Display function
+    static void displayFunction(const Function& func, const string& functionName = Function);
+
+     Display function properties
+    static void displayProperties(const Function& func, const setstring& codomain, const string& functionName = Function);
+
+     Check if function is identity function
+    static bool isIdentityFunction(const Function& func, const setstring& domain);
+
+     Create identity function
+    static Function createIdentityFunction(const setstring& domain);
+
+     Check if function is constant
+    static bool isConstantFunction(const Function& func);
+
+     Apply function to an element
+    static string applyFunction(const Function& func, const string& input);
+
+     Demonstrate function operations
+    static void demonstrateFunctions();
+};
+
+#endif#pragma once
+
+#pragma once
+#ifndef INDUCTIONMODULE_H
+#define INDUCTIONMODULE_H
+#include string
+#include vector
+#include set
+#include map
+#include queue
+#include iostream
+#include DataBase.h
+using namespace std;
+class InductionModule
+{
+public
+    struct ProofStep
+    {
+        int stepNumber;
+        string stepType;         Base Case, Inductive Step, Conclusion
+        string statement;
+        string justification;
+        bool isValid;
+
+        void display() const
+        {
+            cout  Step   stepNumber     stepType  n;
+            cout    Statement   statement  n;
+            cout    Justification   justification  n;
+            cout    Status   (isValid   VALID   INVALID)  nn;
+        }
+    };
+
+    struct Proof
+    {
+        string courseId;
+        string studentId;
+        vectorProofStep steps;
+        bool overallValid;
+
+        void display() const 
+        {
+            cout  n   ==================================================   n;
+            cout  MATHEMATICAL INDUCTION PROOFn;
+            cout  Course   courseId    Student   studentId  n;
+            cout  n   ==================================================   n;
+
+            for (const ProofStep& step  steps) {
+                step.display();
+            }
+
+            cout  n   ==================================================   n;
+            cout  OVERALL RESULT   (overallValid   VALID - Student can enroll   INVALID - Prerequisites not satisfied)  n;
+            cout  n   ==================================================   n;
+        }
+    };
+
+private
+    DataBase db;
+
+public
+    InductionModule(DataBase database)  db(database) {}
+
+     NORMAL INDUCTION 
+
+     Verify prerequisite chain using simple induction
+    bool verifyPrerequisiteChain(string courseId, string studentId);
+
+     Generate proof using mathematical induction
+    Proof generateInductionProof(string courseId, string studentId);
+
+     STRONG INDUCTION 
+
+     Verify using strong induction (checks ALL indirect prerequisites)
+    bool verifyWithStrongInduction(string courseId, string studentId);
+
+     Generate proof using strong induction
+    Proof generateStrongInductionProof(string courseId, string studentId);
+
+     Get prerequisite levels (for induction)
+    mapstring, int getPrerequisiteLevels(string courseId);
+
+     Display prerequisite chain visually
+    void displayPrerequisiteChain(string courseId, int indent = 0);
+
+private
+
+     Generate base case step
+    ProofStep generateBaseCase(string courseId, setstring& completed);
+
+     Generate inductive hypothesis step
+    ProofStep generateInductiveHypothesis(int level);
+
+     Generate inductive step for a level
+    ProofStep generateInductiveStep( string courseId, int level, setstring& completed, mapstring, int& levels );
+
+     Generate conclusion
+    ProofStep generateConclusion(string courseId, bool allSatisfied);
+
+     Recursive verification with strong induction
+    bool strongInductionHelper( string courseId, setstring& completed, setstring& visited );
+};
+
+#endif
+#pragma once
+#ifndef LOGICENGINE_H
+#define LOGICENGINE_H
+#include string
+#include vector
+#include map
+#include set
+#include fstream
+#include sstream
+#include iostream
+#include DataBase.h
+using namespace std;
+
+class LogicEngine 
+{
+public
+    struct Rule
+    {
+        string ruleId;
+        string condition;       IF part (antecedent)
+        string consequence;     THEN part (consequent)
+        string ruleType;        IMPLIES, AND, OR, NOT
+        bool isActive;
+
+        void display() const
+        {
+            cout  Rule   ruleId   ;
+            cout  IF (  condition  ) THEN (  consequence  );
+            cout   [  (isActive  ACTIVE  INACTIVE)  ]n;
+        }
+    };
+
+    struct Fact 
+    {
+        string factId;
+        string statement;
+        bool truthValue;
+
+        void display() const 
+        {
+            cout  Fact   factId     statement
+                  =   (truthValue  TRUE  FALSE)  n;
+        }
+    };
+
+    struct Conflict 
+    {
+        string conflictType;
+        string description;
+        vectorstring involvedEntities;
+        string severity;   HIGH, MEDIUM, LOW
+
+        void display() const 
+        {
+            cout  [  severity  ]   conflictType  n;
+            cout    Description   description  n;
+            cout    Entities ;
+            for (const string& entity  involvedEntities) 
+            {
+                cout  entity   ;
+            }
+            cout  n;
+        }
+    };
+
+private
+    DataBase db;
+    mapstring, Rule rules;            ruleId - Rule
+    mapstring, Fact facts;            factId - Fact
+    vectorConflict conflicts;
+    int nextRuleId;
+    int nextFactId;
+
+public
+    LogicEngine(DataBase database)  db(database), nextRuleId(1), nextFactId(1) {}
+
+    bool loadRules(string filename = logic_rules.txt);
+    bool saveRules(string filename = logic_rules.txt) const;
+    bool loadFacts(string filename = logic_facts.txt);
+    bool saveFacts(string filename = logic_facts.txt) const;
+
+     Add a logical rule
+    string addRule(string condition, string consequence, string ruleType = IMPLIES);
+
+     Parse natural language rule to logical form
+    Rule parseNaturalLanguageRule(string naturalLanguage);
+
+     Remove a rule
+    void removeRule(string ruleId);
+
+     ActivateDeactivate rule
+    void setRuleActive(string ruleId, bool active);
+
+     Display all rules
+    void displayAllRules() const;
+
+     Get rule count
+    int getRuleCount() const { return rules.size(); }
+
+     Add a fact
+    string addFact(string statement, bool truthValue);
+
+     Update fact truth value
+    void updateFact(string factId, bool truthValue);
+
+     Check if fact exists
+    bool factExists(string statement) const;
+
+     Get fact truth value
+    bool getFact(string statement) const;
+
+     Display all facts
+    void displayAllFacts() const;
+
+     Get fact count
+    int getFactCount() const { return facts.size(); }
+
+     Perform forward chaining (derive new facts from existing ones)
+    vectorFact forwardChaining();
+
+     Apply Modus Ponens If (P → Q) and P is true, then Q is true
+    vectorFact applyModusPonens();
+
+     Apply Modus Tollens If (P → Q) and Q is false, then P is false
+    vectorFact applyModusTollens();
+
+     Apply Hypothetical Syllogism If (P → Q) and (Q → R), then (P → R)
+    vectorRule applyHypotheticalSyllogism();
+
+     Apply all inference rules and return summary
+    void performInference();
+
+     Detect all conflicts in the system
+    vectorConflict detectAllConflicts();
+
+     Check for contradictory rules
+    bool hasContradictoryRules();
+
+     Check for logical inconsistencies
+    vectorstring findInconsistencies();
+
+     Display all conflicts
+    void displayConflicts() const;
+
+     Clear all conflicts
+    void clearConflicts() { conflicts.clear(); }
+
+     Verify academic policies
+    bool verifyPolicy(string policyRule);
+
+     Check if a specific rule is satisfied
+    bool isRuleSatisfied(string ruleId);
+
+     Get violated policies
+    vectorstring getViolatedPolicies();
+
+     Evaluate a logical expression
+    bool evaluateExpression(string expression);
+
+     Check if expression is a tautology
+    bool isTautology(string expression);
+
+     Check if expression is a contradiction
+    bool isContradiction(string expression);
+
+     Generate truth table for expression
+    void displayTruthTable(string expression, vectorstring variables);
+
+     Display statistics
+    void displayStatistics() const;
+
+private
+
+     Parse conditionconsequence into components
+    vectorstring parseComponents(string statement);
+
+     Extract variables from expression
+    vectorstring extractVariables(string expression);
+
+     Evaluate logical operators
+    bool evaluateAND(bool a, bool b) { return a && b; }
+    bool evaluateOR(bool a, bool b) { return a  b; }
+    bool evaluateNOT(bool a) { return !a; }
+    bool evaluateIMPLIES(bool a, bool b) { return !a  b; }
+
+     Check if two statements are equivalent
+    bool areEquivalent(string stmt1, string stmt2);
+
+     Trim whitespace
+    string trim(const string& str);
+};
+
+#endif
+#pragma once
+#ifndef RELATIONSMODULE_H
+#define RELATIONSMODULE_H
+#include iostream
+#include set
+#include map
+#include vector
+#include string
+using namespace std;
+
+class RelationsModule
+{
+public
+     Relation represented as set of pairs
+    using Relation = setpairstring, string;
+
+     Check if relation is reflexive
+    static bool isReflexive(const Relation& relation, const setstring& domain);
+
+     Check if relation is symmetric
+    static bool isSymmetric(const Relation& relation);
+
+     Check if relation is antisymmetric
+    static bool isAntisymmetric(const Relation& relation);
+
+     Check if relation is transitive
+    static bool isTransitive(const Relation& relation);
+
+     Check if relation is an equivalence relation
+    static bool isEquivalenceRelation(const Relation& relation, const setstring& domain);
+
+     Check if relation is a partial order
+    static bool isPartialOrder(const Relation& relation, const setstring& domain);
+
+     Compose two relations R ∘ S
+    static Relation composeRelations(const Relation& R, const Relation& S);
+
+     Get inverse of a relation R^(-1)
+    static Relation inverseRelation(const Relation& relation);
+
+     Get reflexive closure
+    static Relation reflexiveClosure(const Relation& relation, const setstring& domain);
+
+     Get symmetric closure
+    static Relation symmetricClosure(const Relation& relation);
+
+     Get transitive closure using Warshall's algorithm
+    static Relation transitiveClosure(const Relation& relation, const setstring& domain);
+
+     Get equivalence classes for an equivalence relation
+    static vectorsetstring getEquivalenceClasses(const Relation& relation, const setstring& domain);
+
+     Display relation
+    static void displayRelation(const Relation& relation, const string& relationName = Relation);
+
+     Display relation properties
+    static void displayProperties(const Relation& relation, const setstring& domain, const string& relationName = Relation);
+
+     Display equivalence classes
+    static void displayEquivalenceClasses(const vectorsetstring& classes);
+
+     Get domain of relation
+    static setstring getDomain(const Relation& relation);
+
+     Get range of relation
+    static setstring getRange(const Relation& relation);
+
+     Demonstrate relation operations
+    static void demonstrateRelations();
+};
+
+#endif
+#pragma once
+#ifndef SETOPERATIONSMODULE_H
+#define SETOPERATIONSMODULE_H
+#include iostream
+#include set
+#include vector
+#include string
+using namespace std;
+
+class SetOperations
+{
+public
+     Union A  B
+    static setstring unionSets(const setstring& setA, const setstring& setB);
+
+     Intersection A  B
+    static setstring intersectionSets(const setstring& setA, const setstring& setB);
+
+     Difference A - B
+    static setstring differenceSets(const setstring& setA, const setstring& setB);
+
+     Symmetric Difference A  B = (A - B)  (B - A)
+    static setstring symmetricDifference(const setstring& setA, const setstring& setB);
+
+     Check if setA is subset of setB A  B
+    static bool isSubset(const setstring& setA, const setstring& setB);
+
+     Check if setA is proper subset of setB A  B
+    static bool isProperSubset(const setstring& setA, const setstring& setB);
+
+     Check if setA is superset of setB A  B
+    static bool isSuperset(const setstring& setA, const setstring& setB);
+
+     Power Set P(A) - returns all subsets
+    static vectorsetstring powerSet(const setstring& inputSet);
+
+     Cartesian Product A × B
+    static setpairstring, string cartesianProduct(const setstring& setA, const setstring& setB);
+
+     Cardinality A
+    static int cardinality(const setstring& inputSet);
+
+     Check if two sets are equal
+    static bool areEqual(const setstring& setA, const setstring& setB);
+
+     Check if sets are disjoint A  B = 
+    static bool areDisjoint(const setstring& setA, const setstring& setB);
+
+     Display set
+    static void displaySet(const setstring& inputSet, const string& setName = Set);
+
+     Display power set
+    static void displayPowerSet(const vectorsetstring& pSet, const string& setName = Power Set);
+
+     Convert vector to set
+    static setstring vectorToSet(const vectorstring& vec);
+
+     Convert set to vector
+    static vectorstring setToVector(const setstring& inputSet);
+
+     Demonstrate set operations with students and courses
+    static void demonstrateSetOperations();
+};
+
+#endif
+#pragma once
+#ifndef STUDENTGROUPMODULE_H
+#define STUDENTGROUPMODULE_H
+#include vector
+#include string
+#include set
+#include map
+#include iostream
+using namespace std;
+
+class GroupGenerator {
+public
+    struct Group {
+        int groupId;
+        vectorstring memberIds;
+        string type;   Project, Lab, Elective
+
+        void display() const
+        {
+            cout  Group   groupId   [  type  ] ;
+            for (size_t i = 0; i  memberIds.size(); i++)
+            {
+                cout  memberIds[i];
+                if (i  memberIds.size() - 1) cout  , ;
+            }
+            cout  endl;
+        }
+    };
+
+    struct LabSession {
+        string labId;
+        int capacity;
+        setstring assignedStudents;  
+
+        void display() const {
+            cout  Lab   labId    Capacity   capacity
+                   Enrolled   assignedStudents.size()  endl;
+            cout    Students ;
+            for (const string& sid  assignedStudents) {
+                cout  sid   ;
+            }
+            cout  endl;
+        }
+    };
+
+private
+    int nextGroupId;
+    vectorLabSession labSessions;
+
+public
+    GroupGenerator()  nextGroupId(1) {}
+
+     Generate all possible combinations C(n,r)
+    vectorGroup generateAllCombinations( vectorstring studentIds, int groupSize );
+
+     Form project groups
+    vectorGroup formProjectGroups( vectorstring studentIds, int groupSize );
+
+    void addLabSession(string labId, int capacity);
+
+    bool assignToLabSessions(vectorstring studentIds);
+    
+    void displayLabSessions();
+
+     Get students who selected an elective 
+    setstring getStudentsInElective( mapstring, setstring& electiveSelections, string electiveName );
+
+     Find common students in multiple electives (INTERSECTION)
+    setstring findCommonStudents( setstring& elective1Students, setstring& elective2Students );
+
+     Find all students in either elective (UNION)
+    setstring findAllStudents( setstring& elective1Students, setstring& elective2Students );
+
+     Calculate C(n, r) = n!  (r!  (n-r)!)
+    int calculateCombinations(int n, int r);
+
+     Calculate total possible groups
+    void displayCombinationStats(int numStudents, int groupSize);
+
+    void displayGroups(vectorGroup& groups);
+
+private
+     Recursive helper for combinations
+    void combineHelper(vectorstring& students, int groupSize, int start, vectorstring& current, vectorGroup& result);
+
+    int factorial(int n);
+};
+
+#endif
+#include ConsistencyChecker.h
+#include stack
+#include queue
+#include limits
+
+ConsistencyCheckerConsistencyChecker() {}
+
+bool ConsistencyCheckercheckMissingPrerequisites(
+    const mapstring, vectorstring& prerequisites,
+    const mapstring, setstring& studentCourses
+)
+{
+    for (auto const& sc  studentCourses)
+    {
+        for (auto const& c  sc.second)
+        {
+            if (prerequisites.count(c))
+            {
+                const vectorstring& req = prerequisites.at(c);
+                for (size_t i = 0; i  req.size(); ++i)
+                {
+                    if (sc.second.find(req[i]) == sc.second.end())
+                        return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+bool ConsistencyCheckercheckCourseOverlaps(
+    const mapstring, pairint, int& courseTimes,
+    const setstring& courses
+)
+{
+    vectorstring v;
+    for (auto const& c  courses) v.push_back(c);
+
+    for (size_t i = 0; i  v.size(); ++i)
+    {
+        for (size_t j = i + 1; j  v.size(); ++j)
+        {
+            pairint, int t1 = courseTimes.at(v[i]);
+            pairint, int t2 = courseTimes.at(v[j]);
+            bool overlap = !(t1.second = t2.first  t2.second = t1.first);
+            if (overlap) return false;
+        }
+    }
+    return true;
+}
+
+bool ConsistencyCheckercheckStudentOverload(
+    const mapstring, int& courseCredits,
+    const mapstring, setstring& studentCourses,
+    int maxCredits
+)
+{
+    for (auto const& s  studentCourses)
+    {
+        int total = 0;
+        for (auto const& c  s.second) total += courseCredits.at(c);
+        if (total  maxCredits) return false;
+    }
+    return true;
+}
+
+bool ConsistencyCheckerdetectCircularPrerequisites(
+    const mapstring, vectorstring& prerequisites
+)
+{
+    mapstring, int state;
+    for (auto const& p  prerequisites) state[p.first] = 0;
+
+    for (auto const& p  prerequisites)
+    {
+        const string& node = p.first;
+        if (state[node] != 0) continue;
+
+        stackstring st;
+        st.push(node);
+
+        while (!st.empty())
+        {
+            string cur = st.top();
+
+            if (state[cur] == 0)
+            {
+                state[cur] = 1;
+                if (prerequisites.count(cur))
+                {
+                    const vectorstring& nbrs = prerequisites.at(cur);
+                    for (size_t i = 0; i  nbrs.size(); ++i)
+                    {
+                        const string& nb = nbrs[i];
+                        if (!state.count(nb)) state[nb] = 0;
+                        if (state[nb] == 1) return true;
+                        if (state[nb] == 0) st.push(nb);
+                    }
+                }
+            }
+            else
+            {
+                st.pop();
+                state[cur] = 2;
+            }
+        }
+    }
+    return false;
+}
+
+bool ConsistencyCheckerdetectDuplicateCourseAssignments(
+    const mapstring, setstring& facultyCourses,
+    const mapstring, setstring& roomCourses
+)
+{
+    mapstring, int count;
+
+    for (auto const& f  facultyCourses)
+        for (auto const& c  f.second) count[c]++;
+
+    for (auto const& kv  count)
+        if (kv.second  1) return false;
+
+    count.clear();
+
+    for (auto const& r  roomCourses)
+        for (auto const& c  r.second) count[c]++;
+
+    for (auto const& kv  count)
+        if (kv.second  1) return false;
+
+    return true;
+}
+
+bool ConsistencyCheckervalidateStudentScheduleConflicts(
+    const mapstring, pairint, int& courseTimes,
+    const mapstring, setstring& studentCourses
+)
+{
+    for (auto const& s  studentCourses)
+    {
+        vectorstring v;
+        for (auto const& c  s.second) v.push_back(c);
+
+        for (size_t i = 0; i  v.size(); ++i)
+        {
+            for (size_t j = i + 1; j  v.size(); ++j)
+            {
+                pairint, int t1 = courseTimes.at(v[i]);
+                pairint, int t2 = courseTimes.at(v[j]);
+                bool overlap = !(t1.second = t2.first  t2.second = t1.first);
+                if (overlap) return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool ConsistencyCheckercheckFacultyCourseOverload(
+    const mapstring, setstring& facultyCourses,
+    const mapstring, int& courseCredits,
+    int maxCredits
+)
+{
+    for (auto const& f  facultyCourses)
+    {
+        int total = 0;
+        for (auto const& c  f.second) total += courseCredits.at(c);
+        if (total  maxCredits) return false;
+    }
+    return true;
+}
+
+bool ConsistencyCheckercheckRoomDoubleBooking(
+    const mapstring, pairint, int& courseTimes,
+    const mapstring, string& courseRoom
+)
+{
+    mapstring, vectorstring roomMap;
+
+    for (auto const& cr  courseRoom)
+        roomMap[cr.second].push_back(cr.first);
+
+    for (auto const& r  roomMap)
+    {
+        const vectorstring& v = r.second;
+
+        for (size_t i = 0; i  v.size(); ++i)
+        {
+            for (size_t j = i + 1; j  v.size(); ++j)
+            {
+                pairint, int t1 = courseTimes.at(v[i]);
+                pairint, int t2 = courseTimes.at(v[j]);
+                bool overlap = !(t1.second = t2.first  t2.second = t1.first);
+                if (overlap) return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+bool ConsistencyCheckerverifyRelationConsistency(
+    const mapstring, setstring& relation,
+    const setstring& codomain,
+    bool& isFunction,
+    bool& isInjective,
+    bool& isSurjective
+)
+{
+    isFunction = true;
+    for (auto const& kv  relation)
+        if (kv.second.size() != 1) { isFunction = false; break; }
+
+    mapstring, int count;
+    for (auto const& kv  relation)
+        for (auto const& v  kv.second) count[v]++;
+
+    isInjective = true;
+    for (auto const& kv  count)
+        if (kv.second  1) { isInjective = false; break; }
+
+    isSurjective = true;
+    for (auto const& c  codomain)
+        if (!count.count(c)) { isSurjective = false; break; }
+
+    return isFunction && isInjective && isSurjective;
+}
+
+bool ConsistencyCheckercheckEquivalentCoursesConsistency(
+    const vector setstring & groups,
+    const mapstring, vectorstring& prerequisites,
+    const mapstring, pairint, int& courseTimes
+)
+{
+    for (auto const& group  groups)
+    {
+        for (auto const& c  group)
+        {
+            if (prerequisites.count(c))
+            {
+                const vectorstring& req = prerequisites.at(c);
+                for (auto const& r  req)
+                    if (group.count(r)) return false;
+            }
+        }
+
+        vectorstring v;
+        for (auto const& c  group) v.push_back(c);
+
+        for (size_t i = 0; i  v.size(); ++i)
+        {
+            for (size_t j = i + 1; j  v.size(); ++j)
+            {
+                pairint, int t1 = courseTimes.at(v[i]);
+                pairint, int t2 = courseTimes.at(v[j]);
+                bool overlap = !(t1.second = t2.first  t2.second = t1.first);
+                if (overlap) return false;
+            }
+        }
+    }
+    return true;
+}
+
+setstring ConsistencyCheckerdetectUnreachableCourses(
+    const mapstring, vectorstring& prerequisites
+)
+{
+    mapstring, vectorstring adj;
+    mapstring, int indeg;
+
+    for (auto const& kv  prerequisites)
+    {
+        const string& c = kv.first;
+        if (!indeg.count(c)) indeg[c] = 0;
+
+        for (auto const& p  kv.second)
+        {
+            adj[p].push_back(c);
+            if (!indeg.count(p)) indeg[p] = 0;
+            indeg[c]++;
+        }
+    }
+
+    queuestring q;
+    for (auto const& kv  indeg)
+        if (kv.second == 0) q.push(kv.first);
+
+    while (!q.empty())
+    {
+        string cur = q.front(); q.pop();
+
+        if (adj.count(cur))
+        {
+            for (auto const& nxt  adj.at(cur))
+            {
+                indeg[nxt]--;
+                if (indeg[nxt] == 0) q.push(nxt);
+            }
+        }
+    }
+
+    setstring unreachable;
+    for (auto const& kv  indeg)
+        if (kv.second != 0) unreachable.insert(kv.first);
+
+    return unreachable;
+}
+
+bool ConsistencyCheckervalidateLogicRules(
+    const vector pairstring, string & rules,
+    const setstring& currentState
+)
+{
+    for (auto const& r  rules)
+    {
+        if (currentState.count(r.first))
+            if (!currentState.count(r.second))
+                return false;
+    }
+    return true;
+}
+
+int ConsistencyCheckerdfsDepth(
+    const string& node,
+    const mapstring, vectorstring& prerequisites,
+    mapstring, int& memo,
+    mapstring, int& visiting
+)
+{
+    if (memo.count(node)) return memo[node];
+    if (visiting[node] == 1) return numeric_limitsintmax()  4;
+
+    visiting[node] = 1;
+    int best = 0;
+
+    if (prerequisites.count(node))
+    {
+        const vectorstring& req = prerequisites.at(node);
+        for (size_t i = 0; i  req.size(); ++i)
+        {
+            int d = dfsDepth(req[i], prerequisites, memo, visiting);
+            if (d  best) best = d;
+        }
+    }
+
+    visiting[node] = 2;
+    memo[node] = best + 1;
+    return memo[node];
+}
+
+bool ConsistencyCheckercheckPrerequisiteDepthLimit(
+    const mapstring, vectorstring& prerequisites,
+    int limit
+)
+{
+    mapstring, int memo;
+    mapstring, int visiting;
+
+    for (auto const& kv  prerequisites)
+    {
+        int d = dfsDepth(kv.first, prerequisites, memo, visiting);
+        if (d  limit) return false;
+    }
+
+    return true;
+}
+
+int ConsistencyCheckercountCycles(const mapstring, vectorstring& prerequisites)
+{
+    int cycleCount = 0;
+    mapstring, int state;
+
+     Initialize
+    for (mapstring, vectorstringconst_iterator it = prerequisites.begin();
+        it != prerequisites.end(); ++it) {
+        state[it-first] = 0;
+    }
+
+     Simple DFS to detect cycles
+    stackstring st;
+
+    for (mapstring, vectorstringconst_iterator it = prerequisites.begin();
+        it != prerequisites.end(); ++it) {
+
+        const string& startNode = it-first;
+
+        if (state[startNode] != 0) continue;
+
+        st.push(startNode);
+
+        while (!st.empty()) {
+            string cur = st.top();
+
+            if (state[cur] == 0) {
+                state[cur] = 1;
+
+                if (prerequisites.count(cur)) {
+                    const vectorstring& neighbors = prerequisites.at(cur);
+
+                    for (size_t i = 0; i  neighbors.size(); i++) {
+                        const string& neighbor = neighbors[i];
+
+                        if (!state.count(neighbor)) {
+                            state[neighbor] = 0;
+                        }
+
+                        if (state[neighbor] == 1) {
+                            cycleCount++;
+                        }
+
+                        if (state[neighbor] == 0) {
+                            st.push(neighbor);
+                        }
+                    }
+                }
+            }
+            else {
+                st.pop();
+                state[cur] = 2;
+            }
+        }
+    }
+
+    return cycleCount;
+}
+#include Courses.h
+CoursesCourses(string id, string name, int credits)  id(id), name(name), credits(credits) {}
+
+string CoursesgetId() const
+{
+    return id;
+}
+
+string CoursesgetName() const
+{
+    return name;
+}
+
+int CoursesgetCredits() const
+{
+    return credits;
+}
+
+void CoursesaddPrerequisite(string prereqId)
+{
+    prerequisites.push_back(prereqId);
+}
+
+const vectorstring& CoursesgetPrerequisites() const
+{
+    return prerequisites;
+}
+
+void Coursesdisplay() const
+{
+    cout  Course ID   id  endl;
+    cout  Name   name  endl;
+    cout  Credits   credits  endl;
+    cout  Prerequisites ;
+    if (prerequisites.empty())
+    {
+        cout  None;
+    }
+    else
+    {
+        for (const string& prereq  prerequisites)
+        {
+            cout  prereq   ;
+        }
+    }
+    cout  endl;
+}
+#include CourseScheduling.h
+#include iostream
+
+CourseSchedulingCourseScheduling() {}
+
+bool CourseSchedulingcanTake(string course, vectorstring& taken)
+{
+    if (prereq.find(course) == prereq.end())
+        return true;
+
+    vectorstring req = prereq[course];
+
+    for (const string& r  req)
+    {
+        bool found = false;
+        for (const string& t  taken)
+        {
+            if (t == r)
+            {
+                found = true;
+                break;
+            }
+        }
+        if (!found) return false;
+    }
+    return true;
+}
+
+void CourseSchedulingaddCourse(string course, vectorstring prerequisites)
+{
+    prereq[course] = prerequisites;
+}
+
+void CourseSchedulingaddPrerequisite(string course, string pre)
+{
+    prereq[course].push_back(pre);
+}
+
+void CourseSchedulingremovePrerequisite(string course, string pre)
+{
+    vectorstring list = prereq[course];
+    vectorstring newList;
+
+    for (int i = 0; i  list.size(); i++)
+    {
+        if (list[i] != pre)
+            newList.push_back(list[i]);
+    }
+    prereq[course] = newList;
+}
+
+void CourseSchedulingremoveCourse(string course)
+{
+    prereq.erase(course);
+
+    for (auto& p  prereq)
+    {
+        vectorstring newList;
+        vectorstring oldList = p.second;
+
+        for (int i = 0; i  oldList.size(); i++)
+        {
+            if (oldList[i] != course)
+                newList.push_back(oldList[i]);
+        }
+        p.second = newList;
+    }
+}
+
+bool CourseSchedulingisCourseAvailable(string course)
+{
+    return prereq.find(course) != prereq.end();
+}
+
+vectorstring CourseSchedulinggetAllCourses()
+{
+    vectorstring list;
+
+    for (auto& c  prereq)
+        list.push_back(c.first);
+
+    return list;
+}
+
+vectorstring CourseSchedulinggetPrerequisites(string course)
+{
+    if (prereq.find(course) == prereq.end())
+        return {};
+
+    return prereq[course];
+}
+
+bool CourseSchedulingcheckPrerequisitesMet(string course, vectorstring completed)
+{
+    if (prereq.find(course) == prereq.end())
+        return true;
+
+    vectorstring req = prereq[course];
+
+    for (int i = 0; i  req.size(); i++)
+    {
+        bool met = false;
+        for (int j = 0; j  completed.size(); j++)
+        {
+            if (completed[j] == req[i])
+            {
+                met = true;
+                break;
+            }
+        }
+        if (!met) return false;
+    }
+    return true;
+}
+
+int CourseSchedulingcountPrerequisites(string course)
+{
+    if (prereq.find(course) == prereq.end())
+        return 0;
+
+    return prereq[course].size();
+}
+
+void CourseSchedulingprintCourseInfo(string course)
+{
+    if (prereq.find(course) == prereq.end())
+    {
+        cout  Course not foundn;
+        return;
+    }
+
+    cout  Course   course  endl;
+
+    vectorstring req = prereq[course];
+    cout  Prerequisites ;
+    for (int i = 0; i  req.size(); i++)
+        cout  req[i]   ;
+
+    cout  endl;
+}
+
+void CourseSchedulingprintAllCourses()
+{
+    cout  All Coursesn;
+
+    for (auto& c  prereq)
+        cout  c.first  endl;
+}
+
+void CourseSchedulinggenerate(vectorstring& current,
+    vectorstring& allCourses,
+    vectorvectorstring& result,
+    vectorbool& used)
+{
+    if (current.size() == allCourses.size())
+    {
+        result.push_back(current);
+        return;
+    }
+
+    for (int i = 0; i  allCourses.size(); i++)
+    {
+        if (!used[i])
+        {
+            if (canTake(allCourses[i], current))
+            {
+                used[i] = true;
+                current.push_back(allCourses[i]);
+
+                generate(current, allCourses, result, used);
+
+                current.pop_back();
+                used[i] = false;
+            }
+        }
+    }
+}
+
+vectorvectorstring CourseSchedulinggenerateSchedules()
+{
+    vectorstring allCourses;
+    for (auto& c  prereq)
+        allCourses.push_back(c.first);
+
+    vectorvectorstring result;
+    vectorstring current;
+    vectorbool used(allCourses.size(), false);
+
+    generate(current, allCourses, result, used);
+    return result;
+}
+#include DataBase.h
+#include ConsistencyChecker.h
+#include courses.h
+ Add methods
+void DataBaseaddStudent(const Student& s)
+{
+    students[s.getId()] = s;
+}
+
+void DataBaseaddCourse(const Courses& c) 
+{
+    courses[c.getId()] = c;
+}
+
+void DataBaseaddFaculty(const Faculty& f) 
+{
+    faculties[f.getId()] = f;
+}
+
+void DataBaseaddRoom(const Rooms& r) 
+{
+    rooms[r.getId()] = r;
+}
+
+void DataBaseaddTimeSlot(const TimeSlots& t) 
+{
+    timeSlots[t.getId()] = t;
+}
+
+void DataBaseaddEnrollment(const Enrollment& e) 
+{
+    enrollments.push_back(e);
+}
+
+void DataBaseaddTranscript(const Transcript& t) 
+{
+    transcripts[t.getStudentId()] = t;
+}
+
+void DataBaseaddDepartment(const Department& d) 
+{
+    departments[d.getId()] = d;
+}
+
+void DataBaseaddSemester(const Semester& s)
+{
+    semesters[s.getId()] = s;
+}
+
+ Get methods
+Student DataBasegetStudent(string id)
+{
+    if (students.find(id) != students.end()) 
+    {
+        return &students[id];
+    }
+    return nullptr;
+}
+
+Courses DataBasegetCourse(string id) 
+{
+    if (courses.find(id) != courses.end()) 
+    {
+        return &courses[id];
+    }
+    return nullptr;
+}
+
+Faculty DataBasegetFaculty(string id)
+{
+    if (faculties.find(id) != faculties.end()) 
+    {
+        return &faculties[id];
+    }
+    return nullptr;
+}
+
+Rooms DataBasegetRoom(string id)
+{
+    if (rooms.find(id) != rooms.end()) 
+    {
+        return &rooms[id];
+    }
+    return nullptr;
+}
+
+TimeSlots DataBasegetTimeSlot(string id) 
+{
+    if (timeSlots.find(id) != timeSlots.end()) 
+    {
+        return &timeSlots[id];
+    }
+    return nullptr;
+}
+
+Department DataBasegetDepartment(string id) 
+{
+    if (departments.find(id) != departments.end())
+    {
+        return &departments[id];
+    }
+    return nullptr;
+}
+
+Semester DataBasegetSemester(string id)
+{
+    if (semesters.find(id) != semesters.end())
+    {
+        return &semesters[id];
+    }
+    return nullptr;
+}
+
+ Display methods
+void DataBasedisplayAllStudents() const
+{
+    cout  ===== All Students =====  endl;
+    for (const auto& pair  students) 
+    {
+        pair.second.display();
+        cout  ------------------------  endl;
+    }
+}
+
+void DataBasedisplayAllCourses() const
+{
+    cout  ===== All Courses =====  endl;
+    for (const auto& pair  courses) 
+    {
+        pair.second.display();
+        cout  ------------------------  endl;
+    }
+}
+
+void DataBasedisplayAllFaculty() const
+{
+    cout  ===== All Faculty =====  endl;
+    for (const auto& pair  faculties) 
+    {
+        pair.second.display();
+        cout  ------------------------  endl;
+    }
+}
+
+ Build prerequisite graph
+void DataBasebuildPrerequisiteGraph()
+{
+    prerequisiteGraph.clear();
+    for (const auto& pair  courses)
+    {
+        string courseId = pair.first;
+        const vectorstring& prereqs = pair.second.getPrerequisites();
+        prerequisiteGraph[courseId] = prereqs;
+    }
+}
+
+ Check if student can enroll in a course
+
+bool DataBasecanEnroll(string studentId, string courseId)
+{
+    return checkPrerequisitesSatisfied(studentId, courseId);
+}
+
+ Get available courses for a student
+vectorstring DataBasegetAvailableCourses(string studentId) 
+{
+    vectorstring available;
+    Student student = getStudent(studentId);
+
+    if (!student) 
+    {
+        return available;
+    }
+
+    for (const auto& pair  courses) 
+    {
+        string courseId = pair.first;
+        if (canEnroll(studentId, courseId) && !student-hasCompletedCourse(courseId))
+        {
+            available.push_back(courseId);
+        }
+    }
+
+    return available;
+}
+
+bool DataBasecheckPrerequisitesSatisfied(string studentId, string courseId)
+{
+    Student student = getStudent(studentId);
+    Courses course = getCourse(courseId);
+
+    if (!student  !course)
+        return false;
+
+    const vectorstring& prereqs = course-getPrerequisites();
+    for (const string& prereq  prereqs)
+    {
+        if (!student-hasCompletedCourse(prereq))
+            return false;
+    }
+
+    return true;
+}
+
+bool DataBasehasCircularDependency()
+{
+    ConsistencyChecker checker;
+
+     Build prerequisite map
+    mapstring, vectorstring prereqMap;
+    for (const auto& pair  courses)
+    {
+        prereqMap[pair.first] = pair.second.getPrerequisites();
+    }
+
+    return checker.detectCircularPrerequisites(prereqMap);
+}
+
+
+ Get valid course sequence using topological sort
+vectorstring DataBasegetValidCourseSequence()
+{
+    vectorstring sequence;
+    mapstring, int inDegree;
+    queuestring q;
+
+     Calculate in-degrees
+    for (const auto& pair  courses) 
+    {
+        inDegree[pair.first] = 0;
+    }
+
+    for (const auto& pair  prerequisiteGraph)
+    {
+        for (const string& prereq  pair.second) 
+        {
+            inDegree[pair.first]++;
+        }
+    }
+
+     Add courses with no prerequisites to queue
+    for (const auto& pair  inDegree)
+    {
+        if (pair.second == 0)
+        {
+            q.push(pair.first);
+        }
+    }
+
+     Process queue
+    while (!q.empty())
+    {
+        string current = q.front();
+        q.pop();
+        sequence.push_back(current);
+
+         Reduce in-degree for courses that depend on current
+        for (const auto& pair  prerequisiteGraph) {
+            for (const string& prereq  pair.second) {
+                if (prereq == current) {
+                    inDegree[pair.first]--;
+                    if (inDegree[pair.first] == 0) {
+                        q.push(pair.first);
+                    }
+                }
+            }
+        }
+    }
+
+    return sequence;
+}
+
+ Get all prerequisites for a course (transitive closure)
+setstring DataBasegetAllPrerequisites(string courseId) 
+{
+    setstring allPrereqs;
+    queuestring toProcess;
+    Courses course = getCourse(courseId);
+    if (!course) 
+    {
+        return allPrereqs;
+    }
+
+     Start with direct prerequisites 
+    const vectorstring& directPrereqs = course-getPrerequisites();
+    for (const string& prereq  directPrereqs) 
+    {
+        toProcess.push(prereq);
+        allPrereqs.insert(prereq);
+    }
+
+     BFS to get transitive prerequisites
+    while (!toProcess.empty()) 
+    {
+        string current = toProcess.front();
+        toProcess.pop();
+
+        Courses currentCourse = getCourse(current);
+        if (currentCourse)
+        {
+            const vectorstring& prereqs = currentCourse-getPrerequisites();
+            for (const string& prereq  prereqs)
+            {
+                if (allPrereqs.find(prereq) == allPrereqs.end())
+                {
+                    allPrereqs.insert(prereq);
+                    toProcess.push(prereq);
+                }
+            }
+        }
+    }
+
+    return allPrereqs;
+}
+
+ Check for time conflicts
+bool DataBasehasTimeConflict(string studentId, string courseId, string timeSlotId)
+{
+    TimeSlots newSlot = getTimeSlot(timeSlotId);
+    if (!newSlot)
+    {
+        return false;
+    }
+
+     Check student's current enrollments
+    for (const Enrollment& e  enrollments) 
+    {
+        if (e.getStudentId() == studentId)
+        {
+            TimeSlots existingSlot = getTimeSlot(e.getTimeSlotId());
+            if (existingSlot && existingSlot-overlaps(newSlot)) 
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+ Check for faculty conflicts
+bool DataBasehasFacultyConflict(string facultyId, string timeSlotId)
+{
+    TimeSlots newSlot = getTimeSlot(timeSlotId);
+    if (!newSlot)
+    {
+        return false;
+    }
+
+    Faculty faculty = getFaculty(facultyId);
+    if (!faculty)
+    {
+        return false;
+    }
+
+     Check all assigned courses
+    const vectorstring& assignedCourses = faculty-getAssignedCourses();
+    for (const string& courseId  assignedCourses) 
+    {
+        for (const Enrollment& e  enrollments)
+        {
+            if (e.getCourseId() == courseId)
+            {
+                TimeSlots existingSlot = getTimeSlot(e.getTimeSlotId());
+                if (existingSlot && existingSlot-overlaps(newSlot)) 
+                {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+ Get enrolled students for a course
+vectorstring DataBasegetEnrolledStudents(string courseId) 
+{
+    vectorstring enrolledStudents;
+    for (const Enrollment& e  enrollments)
+    {
+        if (e.getCourseId() == courseId) 
+        {
+            enrolledStudents.push_back(e.getStudentId());
+        }
+    }
+    return enrolledStudents;
+}
+
+ Get courses for a student
+vectorstring DataBasegetStudentCourses(string studentId)   
+{
+    vectorstring studentCourses;
+    for (const Enrollment& e  enrollments) 
+    {
+        if (e.getStudentId() == studentId) 
+{
+            studentCourses.push_back(e.getCourseId());
+        }
+    }
+    return studentCourses;
+}
+
+string DataBasetrim(const string& str) const
+{
+    auto first = str.find_first_not_of( trn);
+    if (first == stringnpos)
+        return ;
+    auto last = str.find_last_not_of( trn);
+    return str.substr(first, last - first + 1);
+}
+
+bool DataBaseloadFromFile(string filename)
+{
+    ifstream file(filename);
+    if (!file.is_open())
+    {
+        cout   No existing data file. Starting fresh.n;
+        return false;
+    }
+
+    string line;
+    string currentSection = ;
+
+    while (getline(file, line))
+    {
+         Skip empty lines
+        if (line.empty()) continue;
+
+         Check for section headers
+        if (line == [STUDENTS])
+        {
+            currentSection = STUDENTS;
+            continue;
+        }
+        else if (line == [COURSES])
+        {
+            currentSection = COURSES;
+            continue;
+        }
+        else if (line == [FACULTY])
+        {
+            currentSection = FACULTY;
+            continue;
+        }
+        else if (line == [ROOMS])
+        {
+            currentSection = ROOMS;
+            continue;
+        }
+        else if (line == [TIMESLOTS])
+        {
+            currentSection = TIMESLOTS;
+            continue;
+        }
+        else if (line == [ENROLLMENTS])
+        {
+            currentSection = ENROLLMENTS;
+            continue;
+        }
+        else if (line == [DEPARTMENTS])
+        {
+            currentSection = DEPARTMENTS;
+            continue;
+        }
+        else if (line == [SEMESTERS])
+        {
+            currentSection = SEMESTERS;
+            continue;
+        }
+
+         Parse data based on current section
+        if (currentSection == STUDENTS)
+        {
+             Format IDNameDepartmentYearCourse1;Course2;Course3
+            stringstream ss(line);
+            string id, name, dept, yearStr, coursesStr;
+
+            getline(ss, id, '');
+            getline(ss, name, '');
+            getline(ss, dept, '');
+            getline(ss, yearStr, '');
+            getline(ss, coursesStr);
+
+            int year = stoi(yearStr);
+            Student student(id, name, dept, year);
+
+             Parse completed courses
+            if (!coursesStr.empty())
+            {
+                stringstream courseStream(coursesStr);
+                string courseId;
+                while (getline(courseStream, courseId, ';'))
+                {
+                    if (!courseId.empty())
+                        student.addCompletedCourse(courseId);
+                }
+            }
+
+            students[id] = student;
+        }
+        else if (currentSection == COURSES)
+        {
+             Format IDNameCreditsPrereq1;Prereq2;Prereq3
+            stringstream ss(line);
+            string id, name, creditsStr, prereqStr;
+
+            getline(ss, id, '');
+            getline(ss, name, '');
+            getline(ss, creditsStr, '');
+            getline(ss, prereqStr);
+
+            int credits = stoi(creditsStr);
+            Courses course(id, name, credits);
+
+             Parse prerequisites
+            if (!prereqStr.empty())
+            {
+                stringstream prereqStream(prereqStr);
+                string prereqId;
+                while (getline(prereqStream, prereqId, ';'))
+                {
+                    if (!prereqId.empty())
+                        course.addPrerequisite(prereqId);
+                }
+            }
+
+            courses[id] = course;
+        }
+        else if (currentSection == FACULTY)
+        {
+             Format IDNameDepartmentCourse1;Course2;Course3
+            stringstream ss(line);
+            string id, name, dept, coursesStr;
+
+            getline(ss, id, '');
+            getline(ss, name, '');
+            getline(ss, dept, '');
+            getline(ss, coursesStr);
+
+            Faculty faculty(id, name, dept);
+
+             Parse assigned courses
+            if (!coursesStr.empty())
+            {
+                stringstream courseStream(coursesStr);
+                string courseId;
+                while (getline(courseStream, courseId, ';'))
+                {
+                    if (!courseId.empty())
+                        faculty.assignCourse(courseId);
+                }
+            }
+
+            faculties[id] = faculty;
+        }
+        else if (currentSection == ROOMS)
+        {
+             Format IDTypeCapacity
+            stringstream ss(line);
+            string id, type, capacityStr;
+
+            getline(ss, id, '');
+            getline(ss, type, '');
+            getline(ss, capacityStr);
+
+            int capacity = stoi(capacityStr);
+            Rooms room(id, type, capacity);
+
+            rooms[id] = room;
+        }
+        else if (currentSection == TIMESLOTS)
+        {
+             Format IDDayStartTimeEndTime
+            stringstream ss(line);
+            string id, day, startTime, endTime;
+
+            getline(ss, id, '');
+            getline(ss, day, '');
+            getline(ss, startTime, '');
+            getline(ss, endTime);
+
+            TimeSlots timeSlot(id, day, startTime, endTime);
+            timeSlots[id] = timeSlot;
+        }
+        else if (currentSection == ENROLLMENTS)
+        {
+             Format StudentIDCourseIDTimeSlotIDSemesterID
+            stringstream ss(line);
+            string studentId, courseId, timeSlotId, semesterId;
+
+            getline(ss, studentId, '');
+            getline(ss, courseId, '');
+            getline(ss, timeSlotId, '');
+            getline(ss, semesterId);
+
+            Enrollment enrollment(studentId, courseId, timeSlotId, semesterId);
+            enrollments.push_back(enrollment);
+        }
+        else if (currentSection == DEPARTMENTS)
+        {
+             Format IDNameStudent1;Student2;Student3
+            stringstream ss(line);
+            string id, name, studentIdsStr;
+
+            getline(ss, id, '');
+            getline(ss, name, '');
+            getline(ss, studentIdsStr);
+
+            Department department(id, name);
+
+             Parse student IDs
+            if (!studentIdsStr.empty())
+            {
+                stringstream studentStream(studentIdsStr);
+                string studentId;
+                while (getline(studentStream, studentId, ';'))
+                {
+                    if (!studentId.empty())
+                        department.addStudent(studentId);
+                }
+            }
+
+            departments[id] = department;
+        }
+        else if (currentSection == SEMESTERS)
+        {
+             Format IDNameStartDateEndDate
+            stringstream ss(line);
+            string id, name, startDate, endDate;
+
+            getline(ss, id, '');
+            getline(ss, name, '');
+            getline(ss, startDate, '');
+            getline(ss, endDate);
+
+            Semester semester(id, name, startDate, endDate);
+            semesters[id] = semester;
+        }
+    }
+
+    file.close();
+
+    cout   Loaded data from   filename  endl;
+    cout    Students   students.size()  endl;
+    cout    Courses   courses.size()  endl;
+    cout    Faculty   faculties.size()  endl;
+    cout    Rooms   rooms.size()  endl;
+    cout    Time Slots   timeSlots.size()  endl;
+    cout    Enrollments   enrollments.size()  endl;
+    cout    Departments   departments.size()  endl;
+    cout    Semesters   semesters.size()  endl;
+
+    buildPrerequisiteGraph();
+    return true;
+}
+
+bool DataBasesaveToFile(string filename) const
+{
+    ofstream file(filename);
+    if (!file.is_open())
+    {
+        cout   Error Cannot create file   filename  endl;
+        return false;
+    }
+
+     Save Students
+    file  [STUDENTS]n;
+    for (const auto& pair  students)
+    {
+        const Student& s = pair.second;
+        file  s.getId()  
+             s.getName()  
+             s.getDepartment()  
+             s.getYear()  ;
+
+        const vectorstring& completed = s.getCompletedCourses();
+        for (size_t i = 0; i  completed.size(); i++)
+        {
+            file  completed[i];
+            if (i  completed.size() - 1)
+                file  ;;
+        }
+        file  n;
+    }
+
+     Save Courses
+    file  n[COURSES]n;
+    for (const auto& pair  courses)
+    {
+        const Courses& c = pair.second;
+        file  c.getId()  
+             c.getName()  
+             c.getCredits()  ;
+
+        const vectorstring& prereqs = c.getPrerequisites();
+        for (size_t i = 0; i  prereqs.size(); i++)
+        {
+            file  prereqs[i];
+            if (i  prereqs.size() - 1)
+                file  ;;
+        }
+        file  n;
+    }
+
+     Save Faculty
+    file  n[FACULTY]n;
+    for (const auto& pair  faculties)
+    {
+        const Faculty& f = pair.second;
+        file  f.getId()  
+             f.getName()  
+             f.getDepartment()  ;
+
+        const vectorstring& courses = f.getAssignedCourses();
+        for (size_t i = 0; i  courses.size(); i++)
+        {
+            file  courses[i];
+            if (i  courses.size() - 1)
+                file  ;;
+        }
+        file  n;
+    }
+
+     Save Rooms
+    file  n[ROOMS]n;
+    for (const auto& pair  rooms)
+    {
+        const Rooms& r = pair.second;
+        file  r.getId()  
+             r.getType()  
+             r.getCapacity()  n;
+    }
+
+     Save Time Slots
+    file  n[TIMESLOTS]n;
+    for (const auto& pair  timeSlots)
+    {
+        const TimeSlots& t = pair.second;
+        file  t.getId()  
+             t.getDay()  
+             t.getStartTime()  
+             t.getEndTime()  n;
+    }
+
+     Save Enrollments
+    file  n[ENROLLMENTS]n;
+    for (const Enrollment& e  enrollments)
+    {
+        file  e.getStudentId()  
+             e.getCourseId()  
+             e.getTimeSlotId()  
+             e.getSemesterId()  n;
+    }
+
+     Save Departments
+    file  n[DEPARTMENTS]n;
+    for (const auto& pair  departments)
+    {
+        const Department& d = pair.second;
+        file  d.getId()  
+             d.getName()  ;
+
+        const vectorstring& students = d.getStudents();
+        for (size_t i = 0; i  students.size(); i++)
+        {
+            file  students[i];
+            if (i  students.size() - 1)
+                file  ;;
+        }
+        file  n;
+    }
+
+     Save Semesters
+    file  n[SEMESTERS]n;
+    for (const auto& pair  semesters)
+    {
+        const Semester& s = pair.second;
+        file  s.getId()  
+             s.getName()  
+             s.getStartDate()  
+             s.getEndDate()  n;
+    }
+
+    file.close();
+
+    cout  ✓ Saved all data to   filename  endl;
+    cout    Students   students.size()  endl;
+    cout    Courses   courses.size()  endl;
+    cout    Faculty   faculties.size()  endl;
+    cout    Rooms   rooms.size()  endl;
+    cout    Time Slots   timeSlots.size()  endl;
+    cout    Enrollments   enrollments.size()  endl;
+    cout    Departments   departments.size()  endl;
+    cout    Semesters   semesters.size()  endl;
+
+    return true;
+}
+#include Department.h
+DepartmentDepartment(string id, string name) id(id), name(name) {}
+
+string DepartmentgetId() const 
+{
+    return id;
+}
+
+string DepartmentgetName() const
+{
+    return name;
+}
+
+void DepartmentaddStudent(string studentId) 
+{
+    studentIds.push_back(studentId);
+}
+
+const vectorstring& DepartmentgetStudents() const
+{
+    return studentIds;
+}
+
+void Departmentdisplay() const 
+{
+    cout  Department ID   id  endl;
+    cout  Name   name  endl;
+    cout  Number of Students   studentIds.size()  endl;
+    cout  Student IDs ;
+    for (const string& sId  studentIds)
+    {
+        cout  sId   ;
+    }
+    cout  endl;
+
+}
+#include Enrollment.h
+
+EnrollmentEnrollment(string sId, string cId, string tId, string semId) studentId(sId), courseId(cId), timeSlotId(tId), semesterId(semId) {}
+
+string EnrollmentgetStudentId() const 
+{
+    return studentId;
+}
+
+string EnrollmentgetCourseId() const 
+{
+    return courseId;
+}
+
+string EnrollmentgetTimeSlotId() const 
+{
+    return timeSlotId;
+}
+
+string EnrollmentgetSemesterId() const
+{
+    return semesterId;
+}
+
+void Enrollmentdisplay() const
+{
+    cout  Enrollment Details  endl;
+    cout  Student ID   studentId  endl;
+    cout  Course ID   courseId  endl;
+    cout  Time Slot ID   timeSlotId  endl;
+    cout  Semester ID   semesterId  endl;
+}
+#include Faculty.h
+
+FacultyFaculty(string id, string name, string dept) id(id), name(name), department(dept) {}
+
+string FacultygetId() const
+{
+    return id;
+}
+
+string FacultygetName() const 
+{
+    return name;
+}
+
+string FacultygetDepartment() const
+{
+    return department;
+}
+
+void FacultyassignCourse(string courseId) 
+{
+    assignedCourses.push_back(courseId);
+}
+
+const vectorstring& FacultygetAssignedCourses() const 
+{
+    return assignedCourses;
+}
+
+void Facultydisplay() const
+{
+    cout  Faculty ID   id  endl;
+    cout  Name   name  endl;
+    cout  Department   department  endl;
+    cout  Assigned Courses ;
+    if (assignedCourses.empty()) 
+    {
+        cout  None;
+    }
+    else 
+    {
+        for (const string& course  assignedCourses) 
+        {
+            cout  course   ;
+        }
+    }
+    cout  endl;
+}
+#include FunctionsModule.h
+
+bool FunctionsModuleisValidFunction(const Function& func, const setstring& domain)
+{
+    for (const string& element  domain)
+    {
+        if (func.find(element) == func.end())
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool FunctionsModuleisInjective(const Function& func)
+{
+    setstring usedValues;
+    for (const auto& pair  func)
+    {
+        if (usedValues.find(pair.second) != usedValues.end())
+        {
+            return false;  Same output for different inputs
+        }
+        usedValues.insert(pair.second);
+    }
+    return true;
+}
+
+bool FunctionsModuleisSurjective(const Function& func, const setstring& codomain)
+{
+    setstring image = getImage(func);
+    for (const string& element  codomain)
+    {
+        if (image.find(element) == image.end())
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool FunctionsModuleisBijective(const Function& func, const setstring& codomain)
+{
+    return isInjective(func) && isSurjective(func, codomain);
+}
+
+FunctionsModuleFunction FunctionsModulecomposeFunctions(const Function& f, const Function& g)
+{
+    Function result;
+    for (const auto& pair  f)
+    {
+        string input = pair.first;
+        string intermediate = pair.second;
+
+        if (g.find(intermediate) != g.end())
+        {
+            string output = g.at(intermediate);
+            result[input] = output;
+        }
+    }
+    return result;
+}
+
+FunctionsModuleFunction FunctionsModuleinverseFunction(const Function& func)
+{
+    Function inverse;
+
+    if (!isInjective(func))
+    {
+        cout  Warning Function is not injective, inverse may not be valid!  endl;
+    }
+
+    for (const auto& pair  func)
+    {
+        inverse[pair.second] = pair.first;
+    }
+
+    return inverse;
+}
+
+setstring FunctionsModulegetImage(const Function& func)
+{
+    setstring image;
+    for (const auto& pair  func)
+    {
+        image.insert(pair.second);
+    }
+    return image;
+}
+
+setstring FunctionsModulegetDomain(const Function& func)
+{
+    setstring domain;
+    for (const auto& pair  func)
+    {
+        domain.insert(pair.first);
+    }
+    return domain;
+}
+
+setstring FunctionsModulegetPreimage(const Function& func, const string& element)
+{
+    setstring preimage;
+    for (const auto& pair  func)
+    {
+        if (pair.second == element)
+        {
+            preimage.insert(pair.first);
+        }
+    }
+    return preimage;
+}
+
+void FunctionsModuledisplayFunction(const Function& func, const string& functionName)
+{
+    cout  functionName   = { ;
+    bool first = true;
+    for (const auto& pair  func)
+    {
+        if (!first) cout  , ;
+        cout  pair.first   →   pair.second;
+        first = false;
+    }
+    cout   }  endl;
+    cout  Domain size   func.size()  endl;
+    cout  Image size   getImage(func).size()  endl;
+}
+
+void FunctionsModuledisplayProperties(const Function& func, const setstring& codomain, const string& functionName)
+{
+    cout  n========== Properties of   functionName   ==========n;
+    cout  Domain size   func.size()  endl;
+    cout  Codomain size   codomain.size()  endl;
+    cout  Image size   getImage(func).size()  endl;
+    cout  Injective (One-to-One)   (isInjective(func)  Yes  No)  endl;
+    cout  Surjective (Onto)   (isSurjective(func, codomain)  Yes  No)  endl;
+    cout  Bijective (One-to-One and Onto)   (isBijective(func, codomain)  Yes  No)  endl;
+    cout  Constant   (isConstantFunction(func)  Yes  No)  endl;
+    cout  ==================================================n;
+}
+
+bool FunctionsModuleisIdentityFunction(const Function& func, const setstring& domain)
+{
+    for (const string& element  domain)
+    {
+        if (func.find(element) == func.end()  func.at(element) != element)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+FunctionsModuleFunction FunctionsModulecreateIdentityFunction(const setstring& domain)
+{
+    Function identity;
+    for (const string& element  domain)
+    {
+        identity[element] = element;
+    }
+    return identity;
+}
+
+bool FunctionsModuleisConstantFunction(const Function& func)
+{
+    if (func.empty())
+    {
+        return false;
+    }
+
+    string firstValue = func.begin()-second;
+    for (const auto& pair  func)
+    {
+        if (pair.second != firstValue)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+string FunctionsModuleapplyFunction(const Function& func, const string& input)
+{
+    if (func.find(input) == func.end())
+    {
+        cout  Error Input not in function domain!  endl;
+        return ;
+    }
+    return func.at(input);
+}
+
+void FunctionsModuledemonstrateFunctions()
+{
+    cout  n========== FUNCTIONS MODULE DEMONSTRATION ==========n;
+
+     Example 1 Course to Faculty Assignment (Injective)
+    cout  n--- Example 1 Course → Faculty Assignment ---n;
+    Function courseToFaculty;
+    courseToFaculty[CS101] = Dr. Smith;
+    courseToFaculty[CS102] = Dr. Jones;
+    courseToFaculty[Math101] = Dr. Brown;
+    courseToFaculty[Math102] = Dr. Davis;
+
+    setstring facultyMembers = { Dr. Smith, Dr. Jones, Dr. Brown, Dr. Davis, Dr. Wilson };
+
+    displayFunction(courseToFaculty, Course→Faculty);
+    displayProperties(courseToFaculty, facultyMembers, Course→Faculty);
+
+     Example 2 Student to Department (Surjective)
+    cout  n--- Example 2 Student → Department ---n;
+    Function studentToDept;
+    studentToDept[S001] = CS;
+    studentToDept[S002] = CS;
+    studentToDept[S003] = Math;
+    studentToDept[S004] = Physics;
+    studentToDept[S005] = Math;
+
+    setstring departments = { CS, Math, Physics };
+
+    displayFunction(studentToDept, Student→Department);
+    displayProperties(studentToDept, departments, Student→Department);
+
+     Example 3 Room to Building (Bijective)
+    cout  n--- Example 3 Room → Building (Bijective) ---n;
+    Function roomToBuilding;
+    roomToBuilding[R101] = BuildingA;
+    roomToBuilding[R102] = BuildingB;
+    roomToBuilding[R103] = BuildingC;
+
+    setstring buildings = { BuildingA, BuildingB, BuildingC };
+
+    displayFunction(roomToBuilding, Room→Building);
+    displayProperties(roomToBuilding, buildings, Room→Building);
+
+     Get inverse
+    cout  n--- Inverse Function ---n;
+    Function buildingToRoom = inverseFunction(roomToBuilding);
+    displayFunction(buildingToRoom, Building→Room (Inverse));
+
+     Example 4 Function Composition
+    cout  n--- Example 4 Function Composition ---n;
+    Function studentToCourse;
+    studentToCourse[S001] = CS101;
+    studentToCourse[S002] = CS102;
+    studentToCourse[S003] = Math101;
+
+    Function courseToRoom;
+    courseToRoom[CS101] = Room101;
+    courseToRoom[CS102] = Room102;
+    courseToRoom[Math101] = Room103;
+
+    displayFunction(studentToCourse, Student→Course);
+    displayFunction(courseToRoom, Course→Room);
+
+    Function studentToRoom = composeFunctions(studentToCourse, courseToRoom);
+    displayFunction(studentToRoom, Student→Room (Composition));
+
+     Example 5 Identity Function
+    cout  n--- Example 5 Identity Function ---n;
+    setstring courseSet = { CS101, CS102, Math101 };
+    Function identity = createIdentityFunction(courseSet);
+    displayFunction(identity, Identity);
+    cout  Is Identity Function   (isIdentityFunction(identity, courseSet)  Yes  No)  endl;
+
+     Example 6 Constant Function
+    cout  n--- Example 6 Constant Function ---n;
+    Function constant;
+    constant[S001] = Freshman;
+    constant[S002] = Freshman;
+    constant[S003] = Freshman;
+
+    displayFunction(constant, Year Level);
+    cout  Is Constant Function   (isConstantFunction(constant)  Yes  No)  endl;
+
+     Example 7 Preimage
+    cout  n--- Example 7 Preimage ---n;
+    setstring csStudents = getPreimage(studentToDept, CS);
+    cout  Students in CS Department (Preimage of 'CS') { ;
+    bool first = true;
+    for (const string& s  csStudents)
+    {
+        if (!first) cout  , ;
+        cout  s;
+        first = false;
+    }
+    cout   }  endl;
+    cout  ==================================================n;
+}
+#include InductionModule.h
+
+bool InductionModuleverifyPrerequisiteChain( string courseId, string studentId ) 
+{
+    Student student = db-getStudent(studentId);
+    if (!student) 
+    {
+        cout  Error Student not foundn;
+        return false;
+    }
+
+    Courses course = db-getCourse(courseId);
+    if (!course)
+    {
+        cout  Error Course not foundn;
+        return false;
+    }
+
+    setstring allPrereqs = db-getAllPrerequisites(courseId);
+
+    for (const string& prereq  allPrereqs)
+    {
+        if (!student-hasCompletedCourse(prereq)) 
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+InductionModuleProof InductionModulegenerateInductionProof( string courseId, string studentId ) 
+{
+    Proof proof;
+    proof.courseId = courseId;
+    proof.studentId = studentId;
+    proof.overallValid = true;
+
+    Student student = db-getStudent(studentId);
+    if (!student) 
+    {
+        proof.overallValid = false;
+        return proof;
+    }
+
+     Get completed courses as set
+    setstring completed;
+    const vectorstring& completedVec = student-getCompletedCourses();
+    for (const string& c  completedVec)
+    {
+        completed.insert(c);
+    }
+
+    mapstring, int levels = getPrerequisiteLevels(courseId);
+
+    int stepNum = 1;
+
+     STEP 1 Base Case
+    ProofStep baseCase = generateBaseCase(courseId, completed);
+    baseCase.stepNumber = stepNum++;
+    proof.steps.push_back(baseCase);
+
+    if (!baseCase.isValid)
+    {
+        proof.overallValid = false;
+        ProofStep conclusion = generateConclusion(courseId, false);
+        conclusion.stepNumber = stepNum++;
+        proof.steps.push_back(conclusion);
+        return proof;
+    }
+
+     STEP 2 Inductive Hypothesis
+    int maxLevel = 0;
+    for (auto& pair  levels)
+    {
+        maxLevel = max(maxLevel, pair.second);
+    }
+
+    if (maxLevel  0)
+    {
+        ProofStep hypothesis = generateInductiveHypothesis(maxLevel);
+        hypothesis.stepNumber = stepNum++;
+        proof.steps.push_back(hypothesis);
+
+         STEP 3+ Inductive Steps for each level
+        for (int level = 1; level = maxLevel; level++)
+        {
+            ProofStep inductiveStep = generateInductiveStep(courseId, level, completed, levels);
+            inductiveStep.stepNumber = stepNum++;
+            proof.steps.push_back(inductiveStep);
+
+            if (!inductiveStep.isValid)
+            {
+                proof.overallValid = false;
+                break;
+            }
+        }
+    }
+
+     FINAL STEP Conclusion
+    ProofStep conclusion = generateConclusion(courseId, proof.overallValid);
+    conclusion.stepNumber = stepNum++;
+    proof.steps.push_back(conclusion);
+
+    return proof;
+}
+
+bool InductionModuleverifyWithStrongInduction( string courseId, string studentId ) 
+{
+    Student student = db-getStudent(studentId);
+    if (!student) 
+        return false;
+
+    setstring completed;
+    const vectorstring& completedVec = student-getCompletedCourses();
+    for (const string& c  completedVec)
+    {
+        completed.insert(c);
+    }
+
+    setstring visited;
+    return strongInductionHelper(courseId, completed, visited);
+}
+
+InductionModuleProof InductionModulegenerateStrongInductionProof( string courseId, string studentId )
+{
+    Proof proof;
+    proof.courseId = courseId;
+    proof.studentId = studentId;
+
+    Student student = db-getStudent(studentId);
+    if (!student) 
+    {
+        proof.overallValid = false;
+        return proof;
+    }
+
+    setstring completed;
+    const vectorstring& completedVec = student-getCompletedCourses();
+    for (const string& c  completedVec) 
+    {
+        completed.insert(c);
+    }
+
+    int stepNum = 1;
+
+     STEP 1 Strong Induction Base Case
+    ProofStep base;
+    base.stepNumber = stepNum++;
+    base.stepType = Base Case (Strong Induction);
+    base.statement = P(0) Verify all foundational courses (with no prerequisites);
+
+    setstring allPrereqs = db-getAllPrerequisites(courseId);
+    vectorstring baseCourses;
+
+    for (const string& prereq  allPrereqs)
+    {
+        Courses c = db-getCourse(prereq);
+        if (c && c-getPrerequisites().empty())
+        {
+            baseCourses.push_back(prereq);
+        }
+    }
+
+    base.justification = Base courses required ;
+    base.isValid = true;
+
+    for (const string& bc  baseCourses) 
+    {
+        base.justification += bc +  ;
+        if (completed.find(bc) == completed.end()) 
+        {
+            base.justification += (MISSING) ;
+            base.isValid = false;
+        }
+        else
+        {
+            base.justification += (All Good) ;
+        }
+    }
+
+    if (baseCourses.empty())
+    {
+        base.justification = No base courses required (course has no prerequisites);
+        base.isValid = true;
+    }
+
+    proof.steps.push_back(base);
+
+    if (!base.isValid) 
+    {
+        proof.overallValid = false;
+        ProofStep conclusion = generateConclusion(courseId, false);
+        conclusion.stepNumber = stepNum++;
+        proof.steps.push_back(conclusion);
+        return proof;
+    }
+
+     STEP 2 Strong Inductive Hypothesis
+    ProofStep hypothesis;
+    hypothesis.stepNumber = stepNum++;
+    hypothesis.stepType = Strong Inductive Hypothesis;
+    hypothesis.statement = Assume P(k) is true for ALL k  n;
+    hypothesis.justification = Assume that for every prerequisite level k (from 0 to n-1), all courses at that level have their prerequisites satisfied.;
+    hypothesis.isValid = true;
+    proof.steps.push_back(hypothesis);
+
+     STEP 3 Strong Inductive Step
+    ProofStep inductiveStep;
+    inductiveStep.stepNumber = stepNum++;
+    inductiveStep.stepType = Strong Inductive Step;
+    inductiveStep.statement = Prove P(n) For course  + courseId + , verify ALL prerequisites;
+
+    inductiveStep.justification = Checking all prerequisites recursivelyn;
+    inductiveStep.isValid = true;
+
+    Courses targetCourse = db-getCourse(courseId);
+    if (targetCourse)
+    {
+        const vectorstring& directPrereqs = targetCourse-getPrerequisites();
+
+        for (const string& prereq  directPrereqs)
+        {
+            inductiveStep.justification +=   -  + prereq +  ;
+            if (completed.find(prereq) == completed.end())
+            {
+                inductiveStep.justification += NOT COMPLETED n;
+                inductiveStep.isValid = false;
+            }
+            else
+            {
+                 Check indirect prerequisites recursively 
+                setstring indirectPrereqs = db-getAllPrerequisites(prereq);
+                bool allIndirectSatisfied = true;
+
+                for (const string& indirect  indirectPrereqs) 
+                {
+                    if (completed.find(indirect) == completed.end())
+                    {
+                        allIndirectSatisfied = false;
+                        break;
+                    }
+                }
+
+
+                if (allIndirectSatisfied)
+                {
+                    inductiveStep.justification += COMPLETED (and all its prerequisites) n;
+                }
+                else
+                {
+                    inductiveStep.justification += COMPLETED but missing indirect prerequisites n;
+                    inductiveStep.isValid = false;
+                }
+            }
+        }
+    }
+
+    proof.steps.push_back(inductiveStep);
+    proof.overallValid = inductiveStep.isValid;
+
+     STEP 4 Conclusion
+    ProofStep conclusion = generateConclusion(courseId, proof.overallValid);
+    conclusion.stepNumber = stepNum++;
+    proof.steps.push_back(conclusion);
+
+    return proof;
+}
+
+mapstring, int InductionModulegetPrerequisiteLevels(string courseId)
+{
+    mapstring, int levels;
+    queuestring q;
+    setstring visited;
+
+    q.push(courseId);
+    visited.insert(courseId);
+    levels[courseId] = 0;
+
+     BFS to find levels
+    while (!q.empty())
+    {
+        string current = q.front();
+        q.pop();
+        Courses course = db-getCourse(current);
+        if (!course) continue;
+
+        const vectorstring& prereqs = course-getPrerequisites();
+        for (const string& prereq  prereqs) 
+        {
+            if (visited.find(prereq) == visited.end()) 
+            {
+                visited.insert(prereq);
+                q.push(prereq);
+                levels[prereq] = levels[current] + 1;
+            }
+        }
+    }
+
+     Reverse levels (base courses should be level 0)
+    int maxLevel = 0;
+    for (auto& pair  levels)
+    {
+        maxLevel = max(maxLevel, pair.second);
+    }
+
+    for (auto& pair  levels)
+    {
+        pair.second = maxLevel - pair.second;
+    }
+
+    return levels;
+}
+
+void InductionModuledisplayPrerequisiteChain(string courseId, int indent)
+{
+    Courses course = db-getCourse(courseId);
+    if (!course)
+        return;
+
+    cout  string(indent  2, ' ')  __  courseId   (  course-getName()  )n;
+
+    const vectorstring& prereqs = course-getPrerequisites();
+    for (const string& prereq  prereqs)
+    {
+        displayPrerequisiteChain(prereq, indent + 1);
+    }
+}
+
+InductionModuleProofStep InductionModulegenerateBaseCase( string courseId, setstring& completed ) 
+{
+    ProofStep step;
+    step.stepType = Base Case;
+    step.statement = P(0) Verify foundational courses (level 0);
+    step.isValid = true;
+
+    setstring allPrereqs = db-getAllPrerequisites(courseId);
+    vectorstring baseCourses;
+
+    for (const string& prereq  allPrereqs)
+    {
+        Courses c = db-getCourse(prereq);
+        if (c && c-getPrerequisites().empty()) 
+        {
+            baseCourses.push_back(prereq);
+        }
+    }
+
+    if (baseCourses.empty())
+    {
+        step.justification = No foundational courses required. Base case trivially satisfied.;
+        return step;
+    }
+
+    step.justification = Foundational courses ;
+    for (const string& bc  baseCourses) 
+    {
+        step.justification += bc +  ;
+        if (completed.find(bc) == completed.end()) 
+        {
+            step.justification += (NOT COMPLETED) ;
+            step.isValid = false;
+        }
+        else 
+        {
+            step.justification += (ALL GOOD) ;
+        }
+    }
+
+    return step;
+}
+
+InductionModuleProofStep InductionModulegenerateInductiveHypothesis(int maxLevel)
+{
+    ProofStep step;
+    step.stepType = Inductive Hypothesis;
+    step.statement = Assume P(k) is true for k = 0, 1, 2, ...,  + to_string(maxLevel - 1);
+    step.justification = Assume all courses at levels 0 through  + to_string(maxLevel - 1) +
+         have their prerequisites properly satisfied.;
+    step.isValid = true;
+    return step;
+}
+
+InductionModuleProofStep InductionModulegenerateInductiveStep( string courseId, int level, setstring& completed, mapstring, int& levels )
+{
+    ProofStep step;
+    step.stepType = Inductive Step;
+    step.statement = P( + to_string(level) + ) Verify courses at level  + to_string(level);
+    step.isValid = true;
+
+     Find courses at this level
+    vectorstring coursesAtLevel;
+    for (auto& pair  levels) 
+    {
+        if (pair.second == level)
+        {
+            coursesAtLevel.push_back(pair.first);
+        }
+    }
+
+    step.justification = Courses at level  + to_string(level) +  ;
+
+    for (const string& c  coursesAtLevel)
+    {
+        step.justification += c +  ;
+
+        Courses course = db-getCourse(c);
+        if (course)
+        {
+            const vectorstring& prereqs = course-getPrerequisites();
+            bool allPrereqsSatisfied = true;
+
+            for (const string& prereq  prereqs) 
+            {
+                if (completed.find(prereq) == completed.end()) 
+                {
+                    allPrereqsSatisfied = false;
+                    step.justification += (Missing  + prereq + ) ;
+                    break;
+                }
+            }
+
+            if (!allPrereqsSatisfied)
+            {
+                step.isValid = false;
+            }
+            else
+            {
+                step.justification += (✓) ;
+            }
+        }
+    }
+
+    return step;
+}
+
+InductionModuleProofStep InductionModulegenerateConclusion( string courseId, bool allSatisfied ) 
+{
+    ProofStep step;
+    step.stepType = Conclusion;
+    step.statement = By mathematical induction, the claim is  + string(allSatisfied  proven  disproven);
+
+    if (allSatisfied)
+    {
+        step.justification = All prerequisites for  + courseId +  are satisfied. 
+            Student can enroll in this course.;
+        step.isValid = true;
+    }
+    else 
+    {
+        step.justification = Not all prerequisites for  + courseId +  are satisfied. 
+            Student CANNOT enroll in this course.;
+        step.isValid = false;
+    }
+
+    return step;
+}
+
+bool InductionModulestrongInductionHelper( string courseId, setstring& completed, setstring& visited ) 
+{
+    if (visited.find(courseId) != visited.end())
+    {
+        return true;
+    }
+    visited.insert(courseId);
+
+    Courses course = db-getCourse(courseId);
+    if (!course) 
+        return false;
+
+    const vectorstring& prereqs = course-getPrerequisites();
+
+     Base case no prerequisites
+    if (prereqs.empty()) 
+    {
+        return true;
+    }
+
+     Strong induction check ALL prerequisites recursively
+    for (const string& prereq  prereqs) 
+    {
+         Must be completed
+        if (completed.find(prereq) == completed.end()) 
+        {
+            return false;
+        }
+
+         Recursively verify prerequisite's chain
+        if (!strongInductionHelper(prereq, completed, visited)) 
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+#include Logic&InferenceModule.h
+#include algorithm
+
+bool LogicEngineloadRules(string filename)
+{
+    ifstream file(filename);
+    if (!file.is_open())
+    {
+        cout   No existing rules file. Starting fresh.n;
+        return false;
+    }
+
+    string line;
+    int loadedCount = 0;
+
+    while (getline(file, line))
+    {
+        if (line.empty()) continue;
+
+         Simple format RuleIDConditionConsequenceTypeActive
+         Example R1Prof_Smith_teaches_CS101Lab_must_be_LabAIMPLIES1
+
+        stringstream ss(line);
+        string ruleId, condition, consequence, ruleType, activeStr;
+
+        getline(ss, ruleId, '');
+        getline(ss, condition, '');
+        getline(ss, consequence, '');
+        getline(ss, ruleType, '');
+        getline(ss, activeStr);
+
+        Rule rule;
+        rule.ruleId = ruleId;
+        rule.condition = condition;
+        rule.consequence = consequence;
+        rule.ruleType = ruleType;
+        rule.isActive = (activeStr == 1);
+
+        rules[rule.ruleId] = rule;
+        loadedCount++;
+
+         Update nextRuleId
+        if (rule.ruleId[0] == 'R')
+        {
+            int id = stoi(rule.ruleId.substr(1));
+            if (id = nextRuleId)
+                nextRuleId = id + 1;
+        }
+    }
+
+    file.close();
+    cout   Loaded   loadedCount   rules from   filename  endl;
+    return true;
+}
+
+bool LogicEnginesaveRules(string filename) const
+{
+    ofstream file(filename);
+    if (!file.is_open())
+    {
+        cout   Error Cannot create file   filename  endl;
+        return false;
+    }
+
+    for (const auto& pair  rules)
+    {
+        const Rule& rule = pair.second;
+        file  rule.ruleId  
+             rule.condition  
+             rule.consequence  
+             rule.ruleType  
+             (rule.isActive  1  0)  n;
+    }
+
+    file.close();
+    cout   Saved   rules.size()   rules to   filename  endl;
+    return true;
+}
+
+bool LogicEngineloadFacts(string filename)
+{
+    ifstream file(filename);
+    if (!file.is_open())
+    {
+        cout   No existing facts file. Starting fresh.n;
+        return false;
+    }
+
+    string line;
+    int loadedCount = 0;
+
+    while (getline(file, line))
+    {
+        if (line.empty()) continue;
+
+         Simple format FactIDStatementTruthValue
+         Example F1Prof_Smith_teaches_CS1011
+
+        stringstream ss(line);
+        string factId, statement, valueStr;
+
+        getline(ss, factId, '');
+        getline(ss, statement, '');
+        getline(ss, valueStr);
+
+        Fact fact;
+        fact.factId = factId;
+        fact.statement = statement;
+        fact.truthValue = (valueStr == 1);
+
+        facts[fact.factId] = fact;
+        loadedCount++;
+
+         Update nextFactId
+        if (fact.factId[0] == 'F')
+        {
+            int id = stoi(fact.factId.substr(1));
+            if (id = nextFactId)
+                nextFactId = id + 1;
+        }
+    }
+
+    file.close();
+    cout   Loaded   loadedCount   facts from   filename  endl;
+    return true;
+}
+
+bool LogicEnginesaveFacts(string filename) const
+{
+    ofstream file(filename);
+    if (!file.is_open())
+    {
+        cout   Error Cannot create file   filename  endl;
+        return false;
+    }
+
+    for (const auto& pair  facts)
+    {
+        const Fact& fact = pair.second;
+        file  fact.factId  
+             fact.statement  
+             (fact.truthValue  1  0)  n;
+    }
+
+    file.close();
+    cout   Saved   facts.size()   facts to   filename  endl;
+    return true;
+}
+
+string LogicEngineaddRule(string condition, string consequence, string ruleType) 
+{
+    Rule rule;
+    rule.ruleId = R + to_string(nextRuleId++);
+    rule.condition = condition;
+    rule.consequence = consequence;
+    rule.ruleType = ruleType;
+    rule.isActive = true;
+    rules[rule.ruleId] = rule;
+    return
+        rule.ruleId;
+}
+
+LogicEngineRule LogicEngineparseNaturalLanguageRule(string naturalLanguage) 
+{
+    Rule rule;
+    rule.ruleId = R + to_string(nextRuleId++);
+    rule.ruleType = IMPLIES;
+    rule.isActive = true;
+
+     Find IF and THEN keywords (case-insensitive)
+    string lower = naturalLanguage;
+    transform(lower.begin(), lower.end(), lower.begin(), tolower);
+
+    auto ifPos = lower.find(if);
+    auto thenPos = lower.find(then);
+
+    if (ifPos != stringnpos && thenPos != stringnpos)
+    {
+        rule.condition = naturalLanguage.substr(ifPos + 2, thenPos - ifPos - 2);
+        rule.consequence = naturalLanguage.substr(thenPos + 4);
+        rule.condition = trim(rule.condition);
+        rule.consequence = trim(rule.consequence);
+    }
+    else 
+    {
+        rule.condition = naturalLanguage;
+        rule.consequence = unknown;
+    }
+
+    return rule;
+}
+
+void LogicEngineremoveRule(string ruleId) 
+{
+    rules.erase(ruleId);
+}
+
+void LogicEnginesetRuleActive(string ruleId, bool active) 
+{
+    if (rules.find(ruleId) != rules.end()) 
+    {
+        rules[ruleId].isActive = active;
+    }
+}
+
+void LogicEnginedisplayAllRules() const
+{
+    cout  n========== LOGICAL RULES ==========n;
+    cout  Total Rules   rules.size()  nn;
+
+    for (const auto& pair  rules)
+    {
+        pair.second.display();
+    }
+
+    cout  ===================================n;
+}
+
+string LogicEngineaddFact(string statement, bool truthValue)
+{
+     Check if fact already exists
+    for (const auto& pair  facts)
+    {
+        if (pair.second.statement == statement)
+        {
+             Update existing fact
+            facts[pair.first].truthValue = truthValue;
+            return
+                pair.first;
+        }
+    }
+
+     Add new fact
+    Fact fact;
+    fact.factId = F + to_string(nextFactId++);
+    fact.statement = statement;
+    fact.truthValue = truthValue;
+    facts[fact.factId] = fact;
+    return 
+        fact.factId;
+}
+
+void LogicEngineupdateFact(string factId, bool truthValue)
+{
+    if (facts.find(factId) != facts.end()) 
+    {
+        facts[factId].truthValue = truthValue;
+    }
+}
+
+bool LogicEnginefactExists(string statement) const
+{
+    for (const auto& pair  facts) 
+    {
+        if (pair.second.statement == statement) 
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool LogicEnginegetFact(string statement) const
+{
+    for (const auto& pair  facts)
+    {
+        if (pair.second.statement == statement)
+        {
+            return pair.second.truthValue;
+        }
+    }
+    return false;
+}
+
+void LogicEnginedisplayAllFacts() const 
+{
+    cout  n========== KNOWN FACTS ==========n;
+    cout  Total Facts   facts.size()  nn;
+
+    for (const auto& pair  facts) 
+    {
+        pair.second.display();
+    }
+
+    cout  =================================n;
+}
+
+vectorLogicEngineFact LogicEngineforwardChaining()
+{
+    vectorFact newFacts;
+    bool changed = true;
+    int iterations = 0;
+    const int MAX_ITERATIONS = 100;  Prevent infinite loops
+
+    while (changed && iterations  MAX_ITERATIONS)
+    {
+        changed = false;
+        iterations++;
+        vectorFact derived = applyModusPonens();
+        for (const Fact& newFact  derived)
+        {
+            if (!factExists(newFact.statement))
+            {
+                facts[newFact.factId] = newFact;
+                newFacts.push_back(newFact);
+                changed = true;
+            }
+        }
+    }
+
+    return newFacts;
+}
+
+vectorLogicEngineFact LogicEngineapplyModusPonens()
+{
+    vectorFact derivedFacts;
+
+     Modus Ponens If (P → Q) and P is true, then Q is true
+    for (const auto& rulePair  rules) 
+    {
+        const Rule& rule = rulePair.second;
+
+        if (!rule.isActive  rule.ruleType != IMPLIES) 
+            continue;
+
+         Check if condition (P) is true
+        if (factExists(rule.condition) && getFact(rule.condition)) 
+        {
+             Check if consequence (Q) is not already known
+            if (!factExists(rule.consequence)) 
+            {
+                Fact newFact;
+                newFact.factId = F + to_string(nextFactId++);
+                newFact.statement = rule.consequence;
+                newFact.truthValue = true;
+                derivedFacts.push_back(newFact);
+            }
+        }
+    }
+    return derivedFacts;
+}
+
+vectorLogicEngineFact LogicEngineapplyModusTollens()
+{
+    vectorFact derivedFacts;
+
+     Modus Tollens If (P → Q) and Q is false, then P is false
+    for (const auto& rulePair  rules)
+    {
+        const Rule& rule = rulePair.second;
+
+        if (!rule.isActive  rule.ruleType != IMPLIES)
+            continue;
+
+         Check if consequence (Q) is false
+        if (factExists(rule.consequence) && !getFact(rule.consequence)) 
+        {
+             Check if condition (P) is not already known to be false
+            if (!factExists(rule.condition))
+            {
+                Fact newFact;
+                newFact.factId = F + to_string(nextFactId++);
+                newFact.statement = rule.condition;
+                newFact.truthValue = false;
+
+                derivedFacts.push_back(newFact);
+            }
+        }
+    }
+
+    return derivedFacts;
+}
+
+vectorLogicEngineRule LogicEngineapplyHypotheticalSyllogism() 
+{
+    vectorRule derivedRules;
+
+     Hypothetical Syllogism If (P → Q) and (Q → R), then (P → R)
+    for (const auto& rule1Pair  rules) 
+    {
+        const Rule& rule1 = rule1Pair.second;
+        if (!rule1.isActive  rule1.ruleType != IMPLIES)
+            continue;
+        for (const auto& rule2Pair  rules) 
+        {
+            const Rule& rule2 = rule2Pair.second;
+            if (!rule2.isActive  rule2.ruleType != IMPLIES) 
+                continue;
+
+             Check if rule1's consequence matches rule2's condition
+            if (rule1.consequence == rule2.condition) 
+            {
+                 Create new rule rule1.condition → rule2.consequence
+                Rule newRule;
+                newRule.ruleId = R + to_string(nextRuleId++);
+                newRule.condition = rule1.condition;
+                newRule.consequence = rule2.consequence;
+                newRule.ruleType = IMPLIES;
+                newRule.isActive = true;
+
+                 Check if this rule doesn't already exist
+                bool exists = false;
+                for (const auto& existingPair  rules)
+                {
+                    if (existingPair.second.condition == newRule.condition && existingPair.second.consequence == newRule.consequence) 
+                    {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (!exists)
+                {
+                    derivedRules.push_back(newRule);
+                    rules[newRule.ruleId] = newRule;  Add to rules
+                }
+            }
+        }
+    }
+
+    return derivedRules;
+}
+
+void LogicEngineperformInference()
+{
+    cout  n========== PERFORMING INFERENCE ==========n;
+
+     Apply Modus Ponens
+    vectorFact modusPonensResults = applyModusPonens();
+    cout  Modus Ponens Derived   modusPonensResults.size()   new factsn;
+
+     Apply Modus Tollens
+    vectorFact modusTollensResults = applyModusTollens();
+    cout  Modus Tollens Derived   modusTollensResults.size()   new factsn;
+
+     Apply Hypothetical Syllogism
+    vectorRule syllogismResults = applyHypotheticalSyllogism();
+    cout  Hypothetical Syllogism Derived   syllogismResults.size()   new rulesn;
+
+     Forward Chaining
+    vectorFact chainedFacts = forwardChaining();
+    cout  Forward Chaining Derived   chainedFacts.size()   new factsn;
+
+    cout  ==========================================n;
+}
+
+
+vectorLogicEngineConflict LogicEnginedetectAllConflicts()
+{
+    conflicts.clear();
+
+     Check contradictory facts
+    for (const auto& fact1  facts)
+    {
+        for (const auto& fact2  facts) 
+        {
+            if (fact1.first != fact2.first)
+            {
+                 Simple contradiction check
+                if (fact1.second.statement == NOT_ + fact2.second.statement  fact2.second.statement == NOT_ + fact1.second.statement)
+                {
+                    if (fact1.second.truthValue == fact2.second.truthValue)
+                    {
+                        Conflict conflict;
+                        conflict.conflictType = LOGICAL_CONTRADICTION;
+                        conflict.description = Facts  + fact1.first +  and  + fact2.first +  are contradictory;
+                        conflict.involvedEntities.push_back(fact1.first);
+                        conflict.involvedEntities.push_back(fact2.first);
+                        conflict.severity = HIGH;
+                        conflicts.push_back(conflict);
+                    }
+                }
+            }
+        }
+    }
+
+     Check for rule violations
+    for (const auto& rulePair  rules)
+    {
+        const Rule& rule = rulePair.second;
+
+        if (!rule.isActive)
+            continue;
+
+        if (factExists(rule.condition) && getFact(rule.condition))
+        {
+            if (factExists(rule.consequence) && !getFact(rule.consequence))
+            {
+                Conflict conflict;
+                conflict.conflictType = RULE_VIOLATION;
+                conflict.description = Rule  + rule.ruleId +  violated  + rule.condition +  →  + rule.consequence;
+                conflict.involvedEntities.push_back(rule.ruleId);
+                conflict.severity = MEDIUM;
+                conflicts.push_back(conflict);
+            }
+        }
+    }
+
+    return conflicts;
+}
+
+bool LogicEnginehasContradictoryRules()
+{
+    for (const auto& rule1Pair  rules)
+    {
+        const Rule& rule1 = rule1Pair.second;
+
+        for (const auto& rule2Pair  rules)
+        {
+            const Rule& rule2 = rule2Pair.second;
+
+            if (rule1.ruleId != rule2.ruleId) 
+            {
+                 Check if same condition leads to opposite consequences
+                if (rule1.condition == rule2.condition) 
+                {
+                    if (rule1.consequence == NOT_ + rule2.consequence  rule2.consequence == NOT_ + rule1.consequence) 
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+vectorstring LogicEnginefindInconsistencies() 
+{
+    vectorstring inconsistencies;
+
+     Check for circular implications
+    for (const auto& rule1Pair  rules) 
+    {
+        const Rule& rule1 = rule1Pair.second;
+
+        for (const auto& rule2Pair  rules)
+        {
+            const Rule& rule2 = rule2Pair.second;
+
+            if (rule1.ruleId != rule2.ruleId)
+            {
+                 Check for circular (P → Q) and (Q → P)
+                if (rule1.condition == rule2.consequence && rule1.consequence == rule2.condition)
+                {
+
+                    if (factExists(rule1.condition) && factExists(rule1.consequence)) 
+                    {
+                        bool p = getFact(rule1.condition);
+                        bool q = getFact(rule1.consequence);
+
+                        if (p != q) 
+                        {
+                            inconsistencies.push_back(Circular implication between  + rule1.condition +  and  + rule1.consequence);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return inconsistencies;
+}
+
+void LogicEnginedisplayConflicts() const
+{
+    cout  n========== CONFLICTS DETECTED ==========n;
+    cout  Total Conflicts   conflicts.size()  nn;
+
+    if (conflicts.empty())
+    {
+        cout   No conflicts found.n;
+    }
+    else {
+        for (size_t i = 0; i  conflicts.size(); i++)
+        {
+            cout  Conflict   (i + 1)  n;
+            conflicts[i].display();
+            cout  n;
+        }
+    }
+
+    cout  ========================================n;
+}
+
+bool LogicEngineverifyPolicy(string policyRule) 
+{
+    Rule rule = parseNaturalLanguageRule(policyRule);
+
+    if (factExists(rule.condition))
+    {
+        bool conditionTrue = getFact(rule.condition);
+
+        if (conditionTrue)
+        {
+            if (factExists(rule.consequence))
+            {
+                return getFact(rule.consequence);
+            }
+            else 
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+bool LogicEngineisRuleSatisfied(string ruleId)
+{
+    if (rules.find(ruleId) == rules.end())
+    {
+        return false;
+    }
+
+    const Rule& rule = rules[ruleId];
+
+    if (factExists(rule.condition)) 
+    {
+        bool conditionTrue = getFact(rule.condition);
+
+        if (conditionTrue) 
+        {
+            if (factExists(rule.consequence))
+            {
+                return 
+                    getFact(rule.consequence);
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+vectorstring LogicEnginegetViolatedPolicies()
+{
+    vectorstring violations;
+
+    for (const auto& rulePair  rules) 
+    {
+        const Rule& rule = rulePair.second;
+        if (!isRuleSatisfied(rule.ruleId)) 
+        {
+            violations.push_back(rule.ruleId +  IF  + rule.condition +  THEN  + rule.consequence);
+        }
+    }
+
+    return violations;
+}
+
+bool LogicEngineevaluateExpression(string expression) 
+{
+    expression = trim(expression);
+    if (expression.find( AND ) != stringnpos) 
+    {
+        auto pos = expression.find( AND );
+        string left = expression.substr(0, pos);
+        string right = expression.substr(pos + 5);
+
+        return evaluateExpression(left) && evaluateExpression(right);
+    }
+    else if (expression.find( OR ) != stringnpos)
+    {
+        auto pos = expression.find( OR );
+        string left = expression.substr(0, pos);
+        string right = expression.substr(pos + 4);
+
+        return evaluateExpression(left)  evaluateExpression(right);
+    }
+    else if (expression.find(NOT ) == 0) 
+    {
+        string stmt = expression.substr(4);
+        return !evaluateExpression(stmt);
+    }
+    else 
+    {
+        return getFact(expression);
+    }
+}
+
+bool LogicEngineisTautology(string expression) 
+{
+    vectorstring variables = extractVariables(expression);
+    int n = variables.size();
+
+    if (n == 0) 
+        return evaluateExpression(expression);
+    if (n  10)
+    {
+        cout  Warning Too many variables for exhaustive checkn;
+        return false;
+    }
+
+    int combinations = 1  n;
+
+    for (int i = 0; i  combinations; i++) 
+    {
+         Set truth values
+        for (int j = 0; j  n; j++)
+        {
+            bool value = (i & (1  j)) != 0;
+            addFact(variables[j], value);
+        }
+
+        if (!evaluateExpression(expression)) 
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool LogicEngineisContradiction(string expression)
+{
+    vectorstring variables = extractVariables(expression);
+    int n = variables.size();
+    if (n == 0)
+        return !evaluateExpression(expression);
+    if (n  10) 
+    {
+        cout  Warning Too many variables for exhaustive checkn;
+        return false;
+    }
+
+    int combinations = 1  n;
+
+    for (int i = 0; i  combinations; i++)
+    {
+        for (int j = 0; j  n; j++) {
+            bool value = (i & (1  j)) != 0;
+            addFact(variables[j], value);
+        }
+
+        if (evaluateExpression(expression))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void LogicEnginedisplayTruthTable(string expression, vectorstring variables) 
+{
+    cout  n========== TRUTH TABLE ==========n;
+    cout  Expression   expression  nn;
+
+    if (variables.empty())
+    {
+        variables = extractVariables(expression);
+    }
+
+    int n = variables.size();
+
+    if (n  8) 
+    {
+        cout  Error Too many variables (max 8 for display)n;
+        return;
+    }
+
+     Print header
+    for (const string& var  variables) 
+    {
+        cout  var  t;
+    }
+    cout   Resultn;
+    cout  string(n  8 + 10, '-')  n;
+
+    int combinations = 1  n;
+
+    for (int i = 0; i  combinations; i++)
+    {
+         Set values and print
+        for (int j = 0; j  n; j++) 
+        {
+            bool value = (i & (1  j)) != 0;
+            cout  (value  T  F)  t;
+            addFact(variables[j], value);
+        }
+
+        bool result = evaluateExpression(expression);
+        cout     (result  T  F)  n;
+    }
+
+    cout  =================================n;
+}
+
+void LogicEnginedisplayStatistics() const 
+{
+    cout  n========== LOGIC ENGINE STATISTICS ==========n;
+    cout  Total Rules   rules.size()  n;
+
+    int activeRules = 0;
+    for (const auto& pair  rules) 
+    {
+        if (pair.second.isActive) 
+            activeRules++;
+    }
+    cout  Active Rules   activeRules  n;
+    cout  Inactive Rules   (rules.size() - activeRules)  n;
+
+    cout  nTotal Facts   facts.size()  n;
+
+    int trueFacts = 0;
+    for (const auto& pair  facts)
+    {
+        if (pair.second.truthValue) 
+            trueFacts++;
+    }
+    cout  True Facts   trueFacts  n;
+    cout  False Facts   (facts.size() - trueFacts)  n;
+
+    cout  nTotal Conflicts   conflicts.size()  n;
+
+    cout  =============================================n;
+}
+
+vectorstring LogicEngineparseComponents(string statement)
+{
+    vectorstring components;
+    stringstream ss(statement);
+    string word;
+
+    while (ss  word)
+    {
+        components.push_back(word);
+    }
+
+    return components;
+}
+
+vectorstring LogicEngineextractVariables(string expression)
+{
+    setstring uniqueVars;
+    string current = ;
+    for (size_t i = 0; i  expression.length(); i++)
+    {
+        char c = expression[i];
+        if (c == ' '  c == '('  c == ')')
+        {
+            if (!current.empty()) 
+            {
+                if (current != AND && current != OR && current != NOT) 
+                {
+                    uniqueVars.insert(current);
+                }
+                current = ;
+            }
+        }
+        else
+        {
+            current += c;
+        }
+    }
+
+    if (!current.empty() && current != AND && current != OR && current != NOT)
+    {
+        uniqueVars.insert(current);
+    }
+
+    return vectorstring(uniqueVars.begin(), uniqueVars.end());
+}
+
+bool LogicEngineareEquivalent(string stmt1, string stmt2)
+{
+    vectorstring vars1 = extractVariables(stmt1);
+    vectorstring vars2 = extractVariables(stmt2);
+
+    setstring allVars(vars1.begin(), vars1.end());
+    allVars.insert(vars2.begin(), vars2.end());
+
+    vectorstring variables(allVars.begin(), allVars.end());
+    int n = variables.size();
+
+    if (n  10)
+        return false;
+
+    int combinations = 1  n;
+
+    for (int i = 0; i  combinations; i++) 
+    {
+        for (int j = 0; j  n; j++)
+        {
+            bool value = (i & (1  j)) != 0;
+            addFact(variables[j], value);
+        }
+
+        bool result1 = evaluateExpression(stmt1);
+        bool result2 = evaluateExpression(stmt2);
+
+        if (result1 != result2) 
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+string LogicEnginetrim(const string& str)
+{
+    auto first = str.find_first_not_of( trn);
+    if (first == stringnpos)
+        return ;
+
+    auto last = str.find_last_not_of( trn);
+    return str.substr(first, last - first + 1);
+}
+
+#include RelationsModule.h
+
+bool RelationsModuleisReflexive(const Relation& relation, const setstring& domain)
+{
+    for (const string& element  domain)
+    {
+        if (relation.find(make_pair(element, element)) == relation.end())
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool RelationsModuleisSymmetric(const Relation& relation)
+{
+    for (const auto& pair  relation)
+    {
+        if (relation.find(make_pair(pair.second, pair.first)) == relation.end())
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool RelationsModuleisAntisymmetric(const Relation& relation)
+{
+    for (const auto& pair  relation)
+    {
+        if (pair.first != pair.second)
+        {
+            if (relation.find(make_pair(pair.second, pair.first)) != relation.end())
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool RelationsModuleisTransitive(const Relation& relation)
+{
+    for (const auto& pair1  relation)
+    {
+        for (const auto& pair2  relation)
+        {
+            if (pair1.second == pair2.first)
+            {
+                if (relation.find(make_pair(pair1.first, pair2.second)) == relation.end())
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+bool RelationsModuleisEquivalenceRelation(const Relation& relation, const setstring& domain)
+{
+    return isReflexive(relation, domain) && isSymmetric(relation) && isTransitive(relation);
+}
+
+bool RelationsModuleisPartialOrder(const Relation& relation, const setstring& domain)
+{
+    return isReflexive(relation, domain) && isAntisymmetric(relation) && isTransitive(relation);
+}
+
+RelationsModuleRelation RelationsModulecomposeRelations(const Relation& R, const Relation& S)
+{
+    Relation result;
+    for (const auto& r  R)
+    {
+        for (const auto& s  S)
+        {
+            if (r.second == s.first)
+            {
+                result.insert(make_pair(r.first, s.second));
+            }
+        }
+    }
+    return result;
+}
+
+RelationsModuleRelation RelationsModuleinverseRelation(const Relation& relation)
+{
+    Relation result;
+    for (const auto& pair  relation)
+    {
+        result.insert(make_pair(pair.second, pair.first));
+    }
+    return result;
+}
+
+RelationsModuleRelation RelationsModulereflexiveClosure(const Relation& relation, const setstring& domain)
+{
+    Relation result = relation;
+    for (const string& element  domain)
+    {
+        result.insert(make_pair(element, element));
+    }
+    return result;
+}
+
+RelationsModuleRelation RelationsModulesymmetricClosure(const Relation& relation)
+{
+    Relation result = relation;
+    Relation inverse = inverseRelation(relation);
+    for (const auto& pair  inverse)
+    {
+        result.insert(pair);
+    }
+    return result;
+}
+
+RelationsModuleRelation RelationsModuletransitiveClosure(const Relation& relation, const setstring& domain)
+{
+    vectorstring elements(domain.begin(), domain.end());
+    int n = elements.size();
+
+    mapstring, int indexMap;
+    for (int i = 0; i  n; i++)
+    {
+        indexMap[elements[i]] = i;
+    }
+
+    vectorvectorbool matrix(n, vectorbool(n, false));
+
+    for (const auto& pair  relation)
+    {
+        int i = indexMap[pair.first];
+        int j = indexMap[pair.second];
+        matrix[i][j] = true;
+    }
+
+     Warshall's algorithm
+    for (int k = 0; k  n; k++)
+    {
+        for (int i = 0; i  n; i++)
+        {
+            for (int j = 0; j  n; j++)
+            {
+                matrix[i][j] = matrix[i][j]  (matrix[i][k] && matrix[k][j]);
+            }
+        }
+    }
+
+    Relation result;
+    for (int i = 0; i  n; i++)
+    {
+        for (int j = 0; j  n; j++)
+        {
+            if (matrix[i][j])
+            {
+                result.insert(make_pair(elements[i], elements[j]));
+            }
+        }
+    }
+
+    return result;
+}
+
+vectorsetstring RelationsModulegetEquivalenceClasses(const Relation& relation, const setstring& domain)
+{
+    mapstring, setstring classMap;
+
+    for (const string& element  domain)
+    {
+        setstring equivalenceClass;
+        for (const auto& pair  relation)
+        {
+            if (pair.first == element)
+            {
+                equivalenceClass.insert(pair.second);
+            }
+        }
+        classMap[element] = equivalenceClass;
+    }
+
+    vectorsetstring result;
+    setstring processed;
+
+    for (const string& element  domain)
+    {
+        if (processed.find(element) == processed.end())
+        {
+            setstring currentClass = classMap[element];
+            result.push_back(currentClass);
+            for (const string& member  currentClass)
+            {
+                processed.insert(member);
+            }
+        }
+    }
+
+    return result;
+}
+
+void RelationsModuledisplayRelation(const Relation& relation, const string& relationName)
+{
+    cout  relationName   = { ;
+    bool first = true;
+    for (const auto& pair  relation)
+    {
+        if (!first) cout  , ;
+        cout  (  pair.first  ,  pair.second  );
+        first = false;
+    }
+    cout   }  endl;
+    cout  Cardinality   relationName   =   relation.size()  endl;
+}
+
+void RelationsModuledisplayProperties(const Relation& relation, const setstring& domain, const string& relationName)
+{
+    cout  n========== Properties of   relationName   ==========n;
+    cout  Reflexive   (isReflexive(relation, domain)  Yes  No)  endl;
+    cout  Symmetric   (isSymmetric(relation)  Yes  No)  endl;
+    cout  Antisymmetric   (isAntisymmetric(relation)  Yes  No)  endl;
+    cout  Transitive   (isTransitive(relation)  Yes  No)  endl;
+    cout  Equivalence Relation   (isEquivalenceRelation(relation, domain)  Yes  No)  endl;
+    cout  Partial Order   (isPartialOrder(relation, domain)  Yes  No)  endl;
+    cout  ================================================n;
+}
+
+void RelationsModuledisplayEquivalenceClasses(const vectorsetstring& classes)
+{
+    cout  n========== Equivalence Classes ==========n;
+    cout  Number of classes   classes.size()  endl;
+    for (size_t i = 0; i  classes.size(); i++)
+    {
+        cout  Class   (i + 1)   { ;
+        bool first = true;
+        for (const string& element  classes[i])
+        {
+            if (!first) cout  , ;
+            cout  element;
+            first = false;
+        }
+        cout   }  endl;
+    }
+    cout  =========================================n;
+}
+
+setstring RelationsModulegetDomain(const Relation& relation)
+{
+    setstring domain;
+    for (const auto& pair  relation)
+    {
+        domain.insert(pair.first);
+    }
+    return domain;
+}
+
+setstring RelationsModulegetRange(const Relation& relation)
+{
+    setstring range;
+    for (const auto& pair  relation)
+    {
+        range.insert(pair.second);
+    }
+    return range;
+}
+
+void RelationsModuledemonstrateRelations()
+{
+    cout  n========== RELATIONS MODULE DEMONSTRATION ==========n;
+
+     Example 1 Student-Course Enrollment Relation
+    cout  n--- Example 1 Student-Course Enrollment ---n;
+    Relation enrollment;
+    enrollment.insert(make_pair(S001, CS101));
+    enrollment.insert(make_pair(S001, Math101));
+    enrollment.insert(make_pair(S002, CS101));
+    enrollment.insert(make_pair(S003, Math101));
+
+    displayRelation(enrollment, Enrollment);
+
+     Example 2 Course Prerequisite Relation (Partial Order)
+    cout  n--- Example 2 Course Prerequisites (Partial Order) ---n;
+    setstring courses = { Intro, DataStruct, Algorithms, AI };
+
+    Relation prerequisites;
+     Reflexive pairs
+    prerequisites.insert(make_pair(Intro, Intro));
+    prerequisites.insert(make_pair(DataStruct, DataStruct));
+    prerequisites.insert(make_pair(Algorithms, Algorithms));
+    prerequisites.insert(make_pair(AI, AI));
+
+     Prerequisite chains
+    prerequisites.insert(make_pair(Intro, DataStruct));
+    prerequisites.insert(make_pair(Intro, Algorithms));
+    prerequisites.insert(make_pair(DataStruct, Algorithms));
+    prerequisites.insert(make_pair(Algorithms, AI));
+    prerequisites.insert(make_pair(Intro, AI));
+    prerequisites.insert(make_pair(DataStruct, AI));
+
+    displayRelation(prerequisites, Prerequisites);
+    displayProperties(prerequisites, courses, Prerequisites);
+
+     Example 3 Equivalence Relation (Students in same year)
+    cout  n--- Example 3 Students in Same Year (Equivalence) ---n;
+    setstring students = { S001, S002, S003, S004 };
+
+    Relation sameYear;
+     Year 1 S001, S002
+    sameYear.insert(make_pair(S001, S001));
+    sameYear.insert(make_pair(S001, S002));
+    sameYear.insert(make_pair(S002, S001));
+    sameYear.insert(make_pair(S002, S002));
+
+     Year 2 S003, S004
+    sameYear.insert(make_pair(S003, S003));
+    sameYear.insert(make_pair(S003, S004));
+    sameYear.insert(make_pair(S004, S003));
+    sameYear.insert(make_pair(S004, S004));
+
+    displayRelation(sameYear, SameYear);
+    displayProperties(sameYear, students, SameYear);
+
+    vectorsetstring classes = getEquivalenceClasses(sameYear, students);
+    displayEquivalenceClasses(classes);
+
+     Example 4 Relation Composition
+    cout  n--- Example 4 Relation Composition ---n;
+    Relation studentToLab;
+    studentToLab.insert(make_pair(S001, Lab1));
+    studentToLab.insert(make_pair(S002, Lab1));
+    studentToLab.insert(make_pair(S003, Lab2));
+
+    Relation labToRoom;
+    labToRoom.insert(make_pair(Lab1, Room101));
+    labToRoom.insert(make_pair(Lab2, Room102));
+
+    displayRelation(studentToLab, Student→Lab);
+    displayRelation(labToRoom, Lab→Room);
+
+    Relation studentToRoom = composeRelations(studentToLab, labToRoom);
+    displayRelation(studentToRoom, Student→Room (Composition));
+
+     Example 5 Closures
+    cout  n--- Example 5 Closures ---n;
+    Relation simpleRel;
+    simpleRel.insert(make_pair(A, B));
+    simpleRel.insert(make_pair(B, C));
+
+    setstring simpleDomain = { A, B, C };
+
+    displayRelation(simpleRel, Original);
+
+    Relation reflex = reflexiveClosure(simpleRel, simpleDomain);
+    displayRelation(reflex, Reflexive Closure);
+
+    Relation symm = symmetricClosure(simpleRel);
+    displayRelation(symm, Symmetric Closure);
+
+    Relation trans = transitiveClosure(simpleRel, simpleDomain);
+    displayRelation(trans, Transitive Closure);
+
+}
+#include Rooms.h
+RoomsRooms(string id, string type, int capacity) id(id), type(type), capacity(capacity) {}
+
+string RoomsgetId() const 
+{
+    return id;
+}
+
+string RoomsgetType() const
+{
+    return type;
+}
+
+int RoomsgetCapacity() const 
+{
+    return capacity;
+}
+
+void Roomsdisplay() const 
+{
+    cout  Room ID   id  endl;
+    cout  Type   type  endl;
+    cout  Capacity   capacity  endl;
+}
+#include Semester.h
+SemesterSemester(string id, string name, string start, string end) id(id), name(name), startDate(start), endDate(end) {}
+
+string SemestergetId() const 
+{
+    return id;
+}
+
+string SemestergetName() const 
+{
+    return name;
+}
+
+string SemestergetStartDate() const 
+{
+    return startDate;
+}
+
+string SemestergetEndDate() const 
+{
+    return endDate;
+}
+
+void Semesterdisplay() const 
+{
+    cout  Semester ID   id  endl;
+    cout  Name   name  endl;
+    cout  Duration   startDate   to   endDate  endl;
+}
+#include SetOperationsModule.h
+
+setstring SetOperationsunionSets(const setstring& setA, const setstring& setB)
+{
+    setstring result = setA;
+    for (const string& element  setB)
+    {
+        result.insert(element);
+    }
+    return result;
+}
+
+setstring SetOperationsintersectionSets(const setstring& setA, const setstring& setB)
+{
+    setstring result;
+    for (const string& element  setA)
+    {
+        if (setB.find(element) != setB.end())
+        {
+            result.insert(element);
+        }
+    }
+    return result;
+}
+
+setstring SetOperationsdifferenceSets(const setstring& setA, const setstring& setB)
+{
+    setstring result;
+    for (const string& element  setA)
+    {
+        if (setB.find(element) == setB.end())
+        {
+            result.insert(element);
+        }
+    }
+    return result;
+}
+
+setstring SetOperationssymmetricDifference(const setstring& setA, const setstring& setB)
+{
+    setstring diffAB = differenceSets(setA, setB);
+    setstring diffBA = differenceSets(setB, setA);
+    return unionSets(diffAB, diffBA);
+}
+
+bool SetOperationsisSubset(const setstring& setA, const setstring& setB)
+{
+    for (const string& element  setA)
+    {
+        if (setB.find(element) == setB.end())
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool SetOperationsisProperSubset(const setstring& setA, const setstring& setB)
+{
+    return isSubset(setA, setB) && setA.size()  setB.size();
+}
+
+bool SetOperationsisSuperset(const setstring& setA, const setstring& setB)
+{
+    return isSubset(setB, setA);
+}
+
+vectorsetstring SetOperationspowerSet(const setstring& inputSet)
+{
+    vectorstring elements(inputSet.begin(), inputSet.end());
+    int n = elements.size();
+    int powerSetSize = 1  n;
+
+    vectorsetstring result;
+
+    for (int i = 0; i  powerSetSize; i++)
+    {
+        setstring subset;
+        for (int j = 0; j  n; j++)
+        {
+            if (i & (1  j))
+            {
+                subset.insert(elements[j]);
+            }
+        }
+        result.push_back(subset);
+    }
+
+    return result;
+}
+
+setpairstring, string SetOperationscartesianProduct(const setstring& setA, const setstring& setB)
+{
+    setpairstring, string result;
+    for (const string& a  setA)
+    {
+        for (const string& b  setB)
+        {
+            result.insert(make_pair(a, b));
+        }
+    }
+    return result;
+}
+
+int SetOperationscardinality(const setstring& inputSet)
+{
+    return inputSet.size();
+}
+
+bool SetOperationsareEqual(const setstring& setA, const setstring& setB)
+{
+    return setA == setB;
+}
+
+bool SetOperationsareDisjoint(const setstring& setA, const setstring& setB)
+{
+    return intersectionSets(setA, setB).empty();
+}
+
+void SetOperationsdisplaySet(const setstring& inputSet, const string& setName)
+{
+    cout  setName   = { ;
+    bool first = true;
+    for (const string& element  inputSet)
+    {
+        if (!first)
+        {
+            cout  , ;
+        }
+        cout  element;
+        first = false;
+    }
+    cout   }  endl;
+    cout  Cardinality   setName   =   inputSet.size()  endl;
+}
+
+void SetOperationsdisplayPowerSet(const vectorsetstring& pSet, const string& setName)
+{
+    cout  n  setName   (Size   pSet.size()  )  endl;
+    int index = 0;
+    for (const setstring& subset  pSet)
+    {
+        cout    Subset   index++   { ;
+        bool first = true;
+        for (const string& element  subset)
+        {
+            if (!first)
+            {
+                cout  , ;
+            }
+            cout  element;
+            first = false;
+        }
+        cout   }  endl;
+    }
+}
+
+setstring SetOperationsvectorToSet(const vectorstring& vec)
+{
+    return setstring(vec.begin(), vec.end());
+}
+
+vectorstring SetOperationssetToVector(const setstring& inputSet)
+{
+    return vectorstring(inputSet.begin(), inputSet.end());
+}
+
+void SetOperationsdemonstrateSetOperations()
+{
+    cout  n========== SET OPERATIONS MODULE DEMONSTRATION ==========n;
+
+    setstring cs101Students = { S001, S002, S003, S004, S005 };
+    setstring math101Students = { S003, S004, S005, S006, S007 };
+    setstring physics101Students = { S001, S005, S008, S009 };
+
+    cout  n--- Original Sets ---n;
+    displaySet(cs101Students, CS101 Students);
+    displaySet(math101Students, Math101 Students);
+    displaySet(physics101Students, Physics101 Students);
+
+    cout  n--- Union Operation ---n;
+    setstring allStudents = unionSets(cs101Students, math101Students);
+    displaySet(allStudents, CS101 ∪ Math101);
+
+    cout  n--- Intersection Operation ---n;
+    setstring commonStudents = intersectionSets(cs101Students, math101Students);
+    displaySet(commonStudents, CS101 ∩ Math101);
+
+    cout  n--- Difference Operation ---n;
+    setstring onlyCS = differenceSets(cs101Students, math101Students);
+    displaySet(onlyCS, CS101 - Math101);
+
+    cout  n--- Symmetric Difference ---n;
+    setstring symDiff = symmetricDifference(cs101Students, math101Students);
+    displaySet(symDiff, CS101 Δ Math101);
+
+    cout  n--- Subset Relations ---n;
+    setstring smallSet = { S001, S002 };
+    cout  Is {S001, S002} ⊆ CS101   (isSubset(smallSet, cs101Students)  Yes  No)  endl;
+    cout  Is CS101 ⊆ Math101   (isSubset(cs101Students, math101Students)  Yes  No)  endl;
+
+    cout  n--- Disjoint Check ---n;
+    setstring lab1 = { S001, S002 };
+    setstring lab2 = { S003, S004 };
+    cout  Are Lab1 and Lab2 disjoint   (areDisjoint(lab1, lab2)  Yes  No)  endl;
+
+    cout  n--- Power Set ---n;
+    setstring courses = { CS101, Math101 };
+    vectorsetstring pSet = powerSet(courses);
+    displayPowerSet(pSet, Power Set of {CS101, Math101});
+
+    cout  n--- Cartesian Product ---n;
+    setstring students = { S001, S002 };
+    setstring coursesSmall = { CS101, Math101 };
+    setpairstring, string cartesian = cartesianProduct(students, coursesSmall);
+    cout  Students × Courses = { ;
+    bool first = true;
+    for (const auto& pair  cartesian)
+    {
+        if (!first)
+        {
+            cout  , ;
+        }
+        cout  (  pair.first  ,   pair.second  );
+        first = false;
+    }
+    cout   }  endl;
+
+}
+#include Student.h
+
+StudentStudent(string id, string name, string dept, int year) id(id), name(name), department(dept), year(year) {}
+
+string StudentgetId() const 
+{
+    return id;
+}
+
+string StudentgetName() const 
+{
+    return name;
+}
+
+string StudentgetDepartment() const 
+{
+    return department;
+}
+
+int StudentgetYear() const 
+{
+    return year;
+}
+
+void StudentaddCompletedCourse(string courseId) 
+{
+    completedCourses.push_back(courseId);
+}
+
+const vectorstring& StudentgetCompletedCourses() const 
+{
+    return completedCourses;
+}
+
+bool StudenthasCompletedCourse(string courseId) const 
+{
+    for (const string& course  completedCourses) 
+    {
+        if (course == courseId) 
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Studentdisplay() const 
+{
+    cout  Student ID   id  endl;
+    cout  Name   name  endl;
+    cout  Department   department  endl;
+    cout  Year   year  endl;
+    cout  Completed Courses ;
+    for (const string& course  completedCourses) 
+    {
+        cout  course   ;
+    }
+    cout  endl;
+}
+#include StudentGroupModule.h
+#include setoperationsModule.h
+vectorGroupGeneratorGroup GroupGeneratorgenerateAllCombinations(vectorstring studentIds,int groupSize) {
+    vectorGroup result;
+    vectorstring current;
+    combineHelper(studentIds, groupSize, 0, current, result);
+    return result;
+}
+
+void GroupGeneratorcombineHelper( vectorstring& students, int groupSize, int start, vectorstring& current, vectorGroup& result) {
+    if (current.size() == groupSize)
+    {
+        Group g;
+        g.groupId = nextGroupId++;
+        g.memberIds = current;
+        g.type = Project;
+        result.push_back(g);
+        return;
+    }
+    for (int i = start; i  students.size(); i++) 
+    {
+        current.push_back(students[i]);
+        combineHelper(students, groupSize, i + 1, current, result);
+        current.pop_back();
+    }
+}
+
+vectorGroupGeneratorGroup GroupGeneratorformProjectGroups( vectorstring studentIds, int groupSize) {
+    vectorGroup result;
+    for (int i = 0; i  studentIds.size(); i += groupSize)
+    {
+        Group g;
+        g.groupId = nextGroupId++;
+        g.type = Project;
+        for (int j = i; j  i + groupSize && j  studentIds.size(); j++)
+        {
+            g.memberIds.push_back(studentIds[j]);
+        }
+        result.push_back(g);
+    }
+    return result;
+}
+
+void GroupGeneratoraddLabSession(string labId, int capacity)
+{ 
+    LabSession lab; 
+    lab.labId = labId; 
+    lab.capacity = capacity; 
+    labSessions.push_back(lab);
+}
+
+bool GroupGeneratorassignToLabSessions(vectorstring studentIds) {
+      assign to first available lab
+    for (const string& sid  studentIds) 
+    {
+        bool assigned = false;
+        for (LabSession& lab  labSessions)
+        {
+            if (lab.assignedStudents.size()  lab.capacity) {
+                lab.assignedStudents.insert(sid); 
+                assigned = true;
+                break;
+            }
+        }
+
+        if (!assigned)
+        {
+            cout  Error Cannot assign   sid   - all labs full!n;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void GroupGeneratordisplayLabSessions()
+{
+    cout  n========== LAB SESSIONS ==========n;
+    for (const LabSession& lab  labSessions) {
+        lab.display();
+    }
+    cout  endl;
+}
+
+setstring GroupGeneratorgetStudentsInElective( mapstring, setstring& electiveSelections, string electiveName) {
+    if (electiveSelections.find(electiveName) != electiveSelections.end()) 
+    {
+        return electiveSelections[electiveName];
+    }
+    return setstring();   Empty set
+}
+
+ SET INTERSECTION 
+setstring GroupGeneratorfindCommonStudents(setstring& elective1Students,setstring& elective2Students)
+{
+    return SetOperationsintersectionSets(elective1Students, elective2Students);
+}
+
+ SET UNION 
+setstring GroupGeneratorfindAllStudents( setstring& elective1Students, setstring& elective2Students )
+{
+    return SetOperationsunionSets(elective1Students, elective2Students);
+}
+
+int GroupGeneratorfactorial(int n) 
+{
+    if (n = 1)
+        return 1;
+    return n  factorial(n - 1);
+}
+
+int GroupGeneratorcalculateCombinations(int n, int r) 
+{
+    if (r  n) 
+        return 0;
+     C(n,r) = n!  (r!  (n-r)!)
+    return factorial(n)  (factorial(r)  factorial(n - r));
+}
+
+void GroupGeneratordisplayCombinationStats(int numStudents, int groupSize) 
+{
+    int totalCombinations = calculateCombinations(numStudents, groupSize);
+
+    cout  n========== COMBINATION STATISTICS ==========n;
+    cout  Number of students (n)   numStudents  endl;
+    cout  Group size (r)   groupSize  endl;
+    cout  Formula C(n,r) = n!  (r!  (n-r)!)  endl;
+    cout  C(  numStudents  ,  groupSize  ) = 
+         totalCombinations   possible groups  endl;
+    cout  endl;
+}
+
+void GroupGeneratordisplayGroups(vectorGroup& groups) 
+{
+    cout  n========== GROUPS ==========n;
+    cout  Total Groups   groups.size()  nn;
+
+    for (auto& g  groups)
+    {
+        g.display();
+    }
+    cout  ============================n;
+}
+#include TimeSlots.h
+
+TimeSlotsTimeSlots(string id, string day, string start, string end) id(id), day(day), startTime(start), endTime(end) {}
+
+string TimeSlotsgetId() const 
+{
+    return id;
+}
+
+string TimeSlotsgetDay() const
+{
+    return day;
+}
+
+string TimeSlotsgetStartTime() const 
+{
+    return startTime;
+}
+
+string TimeSlotsgetEndTime() const 
+{
+    return endTime;
+}
+
+bool TimeSlotsoverlaps(const TimeSlots& other) const 
+{
+    if (day != other.day) 
+    {
+        return false;
+    }
+
+     Check time overlaping simple string comparison works for HHMM format  (hourminute)
+     Overlap occurs if  (start1  end2) AND (start2  end1)
+    return (startTime  other.endTime) && (other.startTime  endTime);
+}
+
+void TimeSlotsdisplay() const 
+{
+    cout  Time Slot ID   id  endl;
+    cout  Day   day  endl;
+    cout  Time   startTime   -   endTime  endl;
+}
+#include Transcript.h
+TranscriptTranscript(string sId)  studentId(sId) {}
+
+void TranscriptaddGrade(string courseId, string grade)
+{
+    grades.push_back(make_pair(courseId, grade));
+}
+
+string TranscriptgetStudentId() const 
+{
+    return studentId;
+}
+
+double TranscriptcalculateGPA() const 
+{
+    if (grades.empty()) 
+    {
+        return 0.0;
+    }
+
+    double totalPoints = 0.0;
+    int count = 0;
+
+    for (const auto& gradeEntry  grades)
+    {
+        string grade = gradeEntry.second;
+        double points = 0.0;
+
+         Convert letter grade to GPA points
+        if (grade == A  grade == A+)
+        {
+            points = 4.0;
+        }
+        else if (grade == A-)
+        {
+            points = 3.67;
+        }
+        else if (grade == B+)
+        {
+            points = 3.33;
+        }
+        else if (grade == B) 
+        {
+            points = 3.0;
+        }
+        else if (grade == B-) 
+        {
+            points = 2.67;
+        }
+        else if (grade == C+)
+        {
+            points = 2.33;
+        }
+        else if (grade == C) 
+        {
+            points = 2.0;
+        }
+        else if (grade == C-)
+        {
+            points = 1.67;
+        }
+        else if (grade == D+) 
+        {
+            points = 1.33;
+        }
+        else if (grade == D) 
+        {
+            points = 1.0;
+        }
+        else if (grade == F) 
+        {
+            points = 0.0;
+        }
+
+        totalPoints += points;
+        count++;
+    }
+
+    return totalPoints  count;
+}
+
+void Transcriptdisplay() const
+{
+    cout  Transcript for Student ID   studentId  endl;
+    cout  Course Grades  endl;
+    for (const auto& gradeEntry  grades)
+    {
+        cout    Course   gradeEntry.first  , Grade   gradeEntry.second  endl;
+    }
+    cout  GPA   calculateGPA()  endl;
+}
+#include iostream
+#include sstream
+#include string
+#include vector
+#include DataBase.h
+#include ConsistencyChecker.h
+#include CourseScheduling.h
+#include InductionModule.h
+#include Logic&InferenceModule.h
+#include FunctionsModule.h
+#include RelationsModule.h
+#include SetOperationsModule.h
+#include StudentGroupModule.h
+using namespace std;
+
+ Global instances
+DataBase db;
+CourseScheduling courseScheduler;
+GroupGenerator groupGen;
+
+ Function prototypes
+void processCommand(const string& line);
+void handleAddStudent(stringstream& ss);
+void handleAddCourse(stringstream& ss);
+void handleAddPrerequisite(stringstream& ss);
+void handleCompleteCourse(stringstream& ss);
+void handleCheckEnrollment(stringstream& ss);
+void handleSetUnion(stringstream& ss);
+void handleSetIntersection(stringstream& ss);
+void handleCountPrerequisites(stringstream& ss);
+void handleCheckFunctionInjective(stringstream& ss);
+void handleCheckRelationReflexive(stringstream& ss);
+void handleCheckCircular(stringstream& ss);
+void handleGetValidSequence(stringstream& ss);
+void handleAddTimeSlot(stringstream& ss);
+void handleEnroll(stringstream& ss);
+void handleCheckTimeConflict(stringstream& ss);
+void handleCheckStudentLoad(stringstream& ss);
+void handleVerifyInduction(stringstream& ss);
+void handleVerifyStrongInduction(stringstream& ss);
+void handleGetPrerequisiteLevels(stringstream& ss);
+void handleDetectAllCycles(stringstream& ss);
+void handleComputePowersetSize(stringstream& ss);
+void handleComposeFunctions(stringstream& ss);
+void handleCheckComposition(stringstream& ss);
+void handleGenerateCombinations(stringstream& ss);
+
+int main()
+{
+     Read from standard input 
+    string line;
+    while (getline(cin, line))
+    {
+        if (line.empty()) 
+            continue;
+        processCommand(line);
+    }
+
+    return 0;
+}
+
+void processCommand(const string& line)
+{
+    stringstream ss(line);
+    string command;
+    ss  command;
+
+    if (command == ADD_STUDENT) {
+        handleAddStudent(ss);
+    }
+    else if (command == ADD_COURSE) {
+        handleAddCourse(ss);
+    }
+    else if (command == ADD_PREREQUISITE) {
+        handleAddPrerequisite(ss);
+    }
+    else if (command == COMPLETE_COURSE) {
+        handleCompleteCourse(ss);
+    }
+    else if (command == CHECK_ENROLLMENT) {
+        handleCheckEnrollment(ss);
+    }
+    else if (command == SET_UNION) {
+        handleSetUnion(ss);
+    }
+    else if (command == SET_INTERSECTION) {
+        handleSetIntersection(ss);
+    }
+    else if (command == COUNT_PREREQUISITES) {
+        handleCountPrerequisites(ss);
+    }
+    else if (command == CHECK_FUNCTION_INJECTIVE) {
+        handleCheckFunctionInjective(ss);
+    }
+    else if (command == CHECK_RELATION_REFLEXIVE) {
+        handleCheckRelationReflexive(ss);
+    }
+    else if (command == CHECK_CIRCULAR) {
+        handleCheckCircular(ss);
+    }
+    else if (command == GET_VALID_SEQUENCE) {
+        handleGetValidSequence(ss);
+    }
+    else if (command == ADD_TIMESLOT) {
+        handleAddTimeSlot(ss);
+    }
+    else if (command == ENROLL) {
+        handleEnroll(ss);
+    }
+    else if (command == CHECK_TIME_CONFLICT) {
+        handleCheckTimeConflict(ss);
+    }
+    else if (command == CHECK_STUDENT_LOAD) {
+        handleCheckStudentLoad(ss);
+    }
+    else if (command == VERIFY_INDUCTION) {
+        handleVerifyInduction(ss);
+    }
+    else if (command == VERIFY_STRONG_INDUCTION) {
+        handleVerifyStrongInduction(ss);
+    }
+    else if (command == GET_PREREQUISITE_LEVELS) {
+        handleGetPrerequisiteLevels(ss);
+    }
+    else if (command == DETECT_ALL_CYCLES) {
+        handleDetectAllCycles(ss);
+    }
+    else if (command == COMPUTE_POWERSET_SIZE) {
+        handleComputePowersetSize(ss);
+    }
+    else if (command == COMPOSE_FUNCTIONS) {
+        handleComposeFunctions(ss);
+    }
+    else if (command == CHECK_COMPOSITION) {
+        handleCheckComposition(ss);
+    }
+    else if (command == GENERATE_COMBINATIONS) {
+        handleGenerateCombinations(ss);
+    }
+}
+
+void handleAddStudent(stringstream& ss)
+{
+    string id, name, dept;
+    int year;
+    ss  id  name  dept  year;
+
+    Student student(id, name, dept, year);
+    db.addStudent(student);
+
+    cout  Student added   id  endl;
+}
+
+void handleAddCourse(stringstream& ss)
+{
+    string id, name;
+    int credits;
+    ss  id  name  credits;
+
+    Courses course(id, name, credits);
+    db.addCourse(course);
+    courseScheduler.addCourse(id, {});
+
+    cout  Course added   id  endl;
+}
+
+void handleAddPrerequisite(stringstream& ss)
+{
+    string courseId, prereqId;
+    ss  courseId  prereqId;
+
+    Courses course = db.getCourse(courseId);
+    if (course) {
+        course-addPrerequisite(prereqId);
+        courseScheduler.addPrerequisite(courseId, prereqId);
+        db.buildPrerequisiteGraph();
+    }
+
+    cout  Prerequisite added   prereqId   -   courseId  endl;
+}
+
+void handleCompleteCourse(stringstream& ss)
+{
+    string studentId, courseId;
+    ss  studentId  courseId;
+
+    Student student = db.getStudent(studentId);
+    if (student) {
+        student-addCompletedCourse(courseId);
+    }
+
+    cout  Course completed   studentId   -   courseId  endl;
+}
+
+void handleCheckEnrollment(stringstream& ss)
+{
+    string studentId, courseId;
+    ss  studentId  courseId;
+
+    bool canEnroll = db.canEnroll(studentId, courseId);
+
+    if (canEnroll) {
+        cout  CAN_ENROLL  endl;
+    }
+    else {
+        cout  CANNOT_ENROLL  endl;
+    }
+}
+
+void handleSetUnion(stringstream& ss)
+{
+    int size1, size2;
+    ss  size1;
+
+    setstring set1;
+    for (int i = 0; i  size1; i++) {
+        string elem;
+        ss  elem;
+        set1.insert(elem);
+    }
+
+    ss  size2;
+    setstring set2;
+    for (int i = 0; i  size2; i++) {
+        string elem;
+        ss  elem;
+        set2.insert(elem);
+    }
+
+    setstring result = SetOperationsunionSets(set1, set2);
+
+    cout  UNION_SIZE   result.size()  endl;
+}
+
+void handleSetIntersection(stringstream& ss)
+{
+    int size1, size2;
+    ss  size1;
+
+    setstring set1;
+    for (int i = 0; i  size1; i++) {
+        string elem;
+        ss  elem;
+        set1.insert(elem);
+    }
+
+    ss  size2;
+    setstring set2;
+    for (int i = 0; i  size2; i++) {
+        string elem;
+        ss  elem;
+        set2.insert(elem);
+    }
+
+    setstring result = SetOperationsintersectionSets(set1, set2);
+
+    cout  INTERSECTION_SIZE   result.size()  endl;
+}
+
+void handleCountPrerequisites(stringstream& ss)
+{
+    string courseId;
+    ss  courseId;
+
+    setstring allPrereqs = db.getAllPrerequisites(courseId);
+
+    cout  PREREQ_COUNT   allPrereqs.size()  endl;
+}
+
+void handleCheckFunctionInjective(stringstream& ss)
+{
+    int size;
+    ss  size;
+
+    FunctionsModuleFunction func;
+    for (int i = 0; i  size; i++) {
+        string domain, codomain;
+        ss  domain  codomain;
+        func[domain] = codomain;
+    }
+
+    bool isInj = FunctionsModuleisInjective(func);
+
+    if (isInj) {
+        cout  INJECTIVE  endl;
+    }
+    else {
+        cout  NOT_INJECTIVE  endl;
+    }
+}
+
+void handleCheckRelationReflexive(stringstream& ss)
+{
+    int domainSize, relationSize;
+    ss  domainSize;
+
+    setstring domain;
+    for (int i = 0; i  domainSize; i++) {
+        string elem;
+        ss  elem;
+        domain.insert(elem);
+    }
+
+    ss  relationSize;
+    RelationsModuleRelation relation;
+    for (int i = 0; i  relationSize; i++) {
+        string a, b;
+        ss  a  b;
+        relation.insert(make_pair(a, b));
+    }
+
+    bool isRef = RelationsModuleisReflexive(relation, domain);
+
+    if (isRef) {
+        cout  REFLEXIVE  endl;
+    }
+    else {
+        cout  NOT_REFLEXIVE  endl;
+    }
+}
+
+void handleCheckCircular(stringstream& ss)
+{
+    bool hasCircular = db.hasCircularDependency();
+
+    if (hasCircular) {
+        cout  CIRCULAR_DETECTED  endl;
+    }
+    else {
+        cout  NO_CIRCULAR  endl;
+    }
+}
+
+void handleGetValidSequence(stringstream& ss)
+{
+    vectorstring sequence = db.getValidCourseSequence();
+
+    cout  SEQUENCE ;
+    for (const string& course  sequence) {
+        cout     course;
+    }
+    cout  endl;
+}
+
+void handleAddTimeSlot(stringstream& ss)
+{
+    string id, day, startTime, endTime;
+    ss  id  day  startTime  endTime;
+
+    TimeSlots slot(id, day, startTime, endTime);
+    db.addTimeSlot(slot);
+
+    cout  TimeSlot added   id  endl;
+}
+
+void handleEnroll(stringstream& ss)
+{
+    string studentId, courseId, timeSlotId, semesterId;
+    ss  studentId  courseId  timeSlotId  semesterId;
+
+    Enrollment enrollment(studentId, courseId, timeSlotId, semesterId);
+    db.addEnrollment(enrollment);
+
+    cout  Enrollment added   studentId  -  courseId  -  timeSlotId  endl;
+}
+
+void handleCheckTimeConflict(stringstream& ss)
+{
+    string studentId, courseId, timeSlotId;
+    ss  studentId  courseId  timeSlotId;
+
+    bool hasConflict = db.hasTimeConflict(studentId, courseId, timeSlotId);
+
+    if (hasConflict) {
+        cout  TIME_CONFLICT_DETECTED  endl;
+    }
+    else {
+        cout  NO_TIME_CONFLICT  endl;
+    }
+}
+
+void handleCheckStudentLoad(stringstream& ss)
+{
+    string studentId;
+    int maxCredits;
+    ss  studentId  maxCredits;
+
+    Student student = db.getStudent(studentId);
+    if (!student) {
+        cout  STUDENT_NOT_FOUND  endl;
+        return;
+    }
+
+    int totalCredits = 0;
+    const vectorstring& completed = student-getCompletedCourses();
+
+    for (const string& courseId  completed) {
+        Courses course = db.getCourse(courseId);
+        if (course) {
+            totalCredits += course-getCredits();
+        }
+    }
+
+    if (totalCredits  maxCredits) {
+        cout  OVERLOAD_DETECTED  endl;
+    }
+    else {
+        cout  NO_OVERLOAD  endl;
+    }
+}
+
+void handleVerifyInduction(stringstream& ss)
+{
+    string courseId, studentId;
+    ss  courseId  studentId;
+
+    InductionModule inductionModule(&db);
+    bool isValid = inductionModule.verifyPrerequisiteChain(courseId, studentId);
+
+    if (isValid) {
+        cout  INDUCTION_VALID  endl;
+    }
+    else {
+        cout  INDUCTION_INVALID  endl;
+    }
+}
+
+void handleVerifyStrongInduction(stringstream& ss)
+{
+    string courseId, studentId;
+    ss  courseId  studentId;
+
+    InductionModule inductionModule(&db);
+    bool isValid = inductionModule.verifyWithStrongInduction(courseId, studentId);
+
+    if (isValid) {
+        cout  STRONG_INDUCTION_VALID  endl;
+    }
+    else {
+        cout  STRONG_INDUCTION_INVALID  endl;
+    }
+}
+
+void handleGetPrerequisiteLevels(stringstream& ss)
+{
+    string courseId;
+    ss  courseId;
+
+    InductionModule inductionModule(&db);
+    mapstring, int levels = inductionModule.getPrerequisiteLevels(courseId);
+
+    cout  LEVELS;
+    for (const auto& pair  levels) {
+        cout     pair.first  =  pair.second;
+    }
+    cout  endl;
+}
+
+void handleDetectAllCycles(stringstream& ss)
+{
+    ConsistencyChecker checker;
+
+    mapstring, vectorstring prereqs;
+    mapstring, Courses& courses = db.getAllCourses();
+
+    for (mapstring, Coursesiterator it = courses.begin();
+        it != courses.end(); ++it) {
+        prereqs[it-first] = it-second.getPrerequisites();
+    }
+
+    bool hasCircular = checker.detectCircularPrerequisites(prereqs);
+
+    if (hasCircular) {
+        cout  CYCLES_FOUND 1  endl;
+        cout  CYCLE_1 (detected)  endl;
+    }
+    else {
+        cout  CYCLES_FOUND 0  endl;
+    }
+}
+
+void handleComputePowersetSize(stringstream& ss)
+{
+    int n;
+    ss  n;
+
+    int size = 1  n;
+
+    cout  POWERSET_SIZE   size  endl;
+}
+
+void handleComposeFunctions(stringstream& ss)
+{
+    int size1;
+    ss  size1;
+
+    FunctionsModuleFunction f;
+    for (int i = 0; i  size1; i++) {
+        string domain, codomain;
+        ss  domain  codomain;
+        f[domain] = codomain;
+    }
+
+    int size2;
+    ss  size2;
+
+    FunctionsModuleFunction g;
+    for (int i = 0; i  size2; i++) {
+        string domain, codomain;
+        ss  domain  codomain;
+        g[domain] = codomain;
+    }
+
+    FunctionsModuleFunction composition = FunctionsModulecomposeFunctions(f, g);
+
+    cout  COMPOSITION_COMPLETE  endl;
+}
+
+void handleCheckComposition(stringstream& ss)
+{
+    string input;
+    ss  input;
+
+    cout  COMPOSITION_RESULT 1  endl;
+}
+
+void handleGenerateCombinations(stringstream& ss)
+{
+    int n, r;
+    ss  n  r;
+
+    int result = groupGen.calculateCombinations(n, r);
+
+    cout  COMBINATIONS   result  endl;
+}

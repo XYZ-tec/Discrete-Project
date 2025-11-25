@@ -113,9 +113,6 @@
     <ClCompile Include="relationsModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_relationsMod.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="functionsModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
