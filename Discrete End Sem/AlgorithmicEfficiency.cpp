@@ -11,7 +11,7 @@ void setColor(int color)
 void AlgorithmicEfficiency::displayHeader()
 {
     setColor(11); // Cyan
-    cout << "\n_________________________\n";
+    cout << "\n  ________________________________________________________________________\n";
     cout << "  |                                                                      |\n";
     cout << "  |          ALGORITHMIC EFFICIENCY ANALYSIS REPORT                      |\n";
     cout << "  |                                                                      |\n";
@@ -21,9 +21,9 @@ void AlgorithmicEfficiency::displayHeader()
 
 void AlgorithmicEfficiency::analyzeConsistencyChecker() {
     setColor(14); // Yellow
-    cout << "\n_________________________\n";
+    cout << "\n______________________________________\n";
     cout << "  MODULE: ConsistencyChecker.cpp\n";
-    cout << "\n_________________________\n";
+    cout << "\n______________________________________\n";
     setColor(7);
 
     cout << "\n---- Function: checkMissingPrerequisites() -----------------------------\n";
@@ -43,15 +43,15 @@ void AlgorithmicEfficiency::analyzeConsistencyChecker() {
     cout << "\n   OPTIMIZATION SUGGESTION:\n";
     setColor(7);
     cout << "     Convert completed courses to unordered_set for O(1) lookup\n";
-    cout << "     Reduces to O(n * m * p) → O(n * m) average case\n";
+    cout << "     Reduces to O(n * m * p) -> O(n * m) average case\n";
     cout << "     Expected Improvement: 60-80% faster for large datasets\n";
     cout << "----------------------------------------------------------------------\n";
 
     cout << "\n---- Function: checkCourseOverlaps() -------------------------------------\n";
     setColor(10);
-    cout << "  Current Time Complexity: O(n²)\n";
+    cout << "  Current Time Complexity: O(n^2)\n";
     setColor(7);
-    cout << "    where n = number of courses to check\n";
+    cout << "  where n = number of courses to check\n";
     cout << "  Space Complexity: O(n)\n";
 
     setColor(12);
@@ -72,7 +72,7 @@ void AlgorithmicEfficiency::analyzeConsistencyChecker() {
     setColor(10);
     cout << "  Current Time Complexity: O(V + E)\n";
     setColor(7);
-    cout << "    where V = vertices (courses), E = edges (prerequisites)\n";
+    cout << "  where V = vertices (courses), E = edges (prerequisites)\n";
     cout << "  Space Complexity: O(V)\n";
 
     setColor(10);
@@ -118,9 +118,9 @@ void AlgorithmicEfficiency::analyzeConsistencyChecker() {
 
 void AlgorithmicEfficiency::analyzeDatabase() {
     setColor(14);
-    cout << "\n_________________________\n";
+    cout << "\n_______________________________\n";
     cout << "  MODULE: DataBase.cpp\n";
-    cout << "\n_________________________\n";
+    cout << "\n_______________________________\n";
     setColor(7);
 
     cout << "\n---- Function: getAllPrerequisites() ------------------------------------------\n";
@@ -146,7 +146,7 @@ void AlgorithmicEfficiency::analyzeDatabase() {
 
     cout << "\n---- Function: getValidCourseSequence() -----------------------------------------\n";
     setColor(10);
-    cout << "  Current Time Complexity: O(V² + VE)\n";
+    cout << "  Current Time Complexity: O(V^2 + VE)\n";
     setColor(7);
 
     setColor(12);
@@ -160,7 +160,7 @@ void AlgorithmicEfficiency::analyzeDatabase() {
     setColor(7);
     cout << "     Build reverse adjacency list once: O(E)\n";
     cout << "     Use that for topological sort: O(V+E)\n";
-    cout << "     Reduce from O(V²+VE) → O(V+E)\n";
+    cout << "     Reduce from O(V^2+VE) -> O(V+E)\n";
     cout << "     Expected improvement: 70-90% for dense graphs\n";
     cout << "----------------------------------------------------------------------\n";
 
@@ -189,9 +189,9 @@ void AlgorithmicEfficiency::analyzeDatabase() {
 
 void AlgorithmicEfficiency::analyzeInductionModule() {
     setColor(14);
-    cout << "\n_________________________\n";
+    cout << "\n______________________________\n";
     cout << "  MODULE: InductionModule.cpp\n";
-    cout << "\n_________________________\n";
+    cout << "\n______________________________\n";
     setColor(7);
 
     cout << "\n---- Function: getPrerequisiteLevels() ------------------------------------------\n";
@@ -229,14 +229,14 @@ void AlgorithmicEfficiency::analyzeInductionModule() {
 
 void AlgorithmicEfficiency::analyzeLogicEngine() {
     setColor(14);
-    cout << "\n_________________________\n";
+    cout << "\n________________________________________\n";
     cout << "  MODULE: Logic&InferenceModule.cpp\n";
-    cout << "\n_________________________\n";
+    cout << "\n________________________________________\n";
     setColor(7);
 
     cout << "\n---- Function: applyHypotheticalSyllogism() --------------------------------------\n";
     setColor(10);
-    cout << "  Current Time Complexity: O(R²)\n";
+    cout << "  Current Time Complexity: O(R^2)\n";
     setColor(7);
     cout << "    where R = number of rules\n";
 
@@ -296,9 +296,9 @@ void AlgorithmicEfficiency::analyzeLogicEngine() {
 
 void AlgorithmicEfficiency::analyzeSetOperations() {
     setColor(14);
-    cout << "\n_________________________\n";
+    cout << "\n______________________________________\n";
     cout << "  MODULE: SetOperationsModule.cpp\n";
-    cout << "\n_________________________\n";
+    cout << "\n______________________________________\n";
     setColor(7);
 
     cout << "\n---- Function: powerSet() --------------------------------------------------------\n";
@@ -338,17 +338,17 @@ void AlgorithmicEfficiency::analyzeSetOperations() {
 
 void AlgorithmicEfficiency::analyzeRelationsModule() {
     setColor(14);
-    cout << "\n_________________________\n";
+    cout << "\n___________________________________\n";
     cout << "  MODULE: RelationsModule.cpp\n";
-    cout << "\n_________________________\n";
+    cout << "\n___________________________________\n";
     setColor(7);
 
     cout << "\n---- Function: transitiveClosure() -----------------------------------------------\n";
     setColor(10);
-    cout << "  Current Time Complexity: O(n³)\n";
+    cout << "  Current Time Complexity: O(n^3)\n";
     setColor(7);
     cout << "  using Warshall's algorithm\n";
-    cout << "  Space Complexity: O(n²)\n";
+    cout << "  Space Complexity: O(n^2)\n";
 
     setColor(10);
     cout << "\n   STANDARD ALGORITHM:\n";
@@ -360,12 +360,12 @@ void AlgorithmicEfficiency::analyzeRelationsModule() {
     cout << "\n   ALTERNATIVE FOR SPARSE:\n";
     setColor(7);
     cout << "     Use DFS/BFS from each vertex: O(V * (V+E))\n";
-    cout << "     Better when |E| << n²\n";
+    cout << "     Better when |E| << n^2\n";
     cout << "----------------------------------------------------------------------\n";
 
     cout << "\n---- Function: isTransitive() ---------------------------------------------------\n";
     setColor(10);
-    cout << "  Current Time Complexity: O(R²)\n";
+    cout << "  Current Time Complexity: O(R^2)\n";
     setColor(7);
     cout << "  where R = relation size (number of pairs)\n";
 
@@ -385,16 +385,16 @@ void AlgorithmicEfficiency::analyzeRelationsModule() {
 
 void AlgorithmicEfficiency::displaySummary() {
     setColor(14);
-    cout << "\n_________________________\n";
+    cout << "\n________________________________________\n";
     cout << "  OVERALL SUMMARY & RECOMMENDATIONS\n";
-    cout << "\n_________________________\n";
+    cout << "\n________________________________________\n";
     setColor(7);
 
     cout << "\n---- HIGH PRIORITY OPTIMIZATIONS ------------------------------------------------\n";
     setColor(12);
-    cout << "  1. getValidCourseSequence(): O(V²+VE) → O(V+E)\n";
-    cout << "  2. applyHypotheticalSyllogism(): O(R²) → O(R)\n";
-    cout << "  3. checkCourseOverlaps(): O(n²) → O(n log n)\n";
+    cout << "  1. getValidCourseSequence(): O(V^2+VE) -> O(V+E)\n";
+    cout << "  2. applyHypotheticalSyllogism(): O(R^2) -> O(R)\n";
+    cout << "  3. checkCourseOverlaps(): O(n^2) -> O(n log n)\n";
     setColor(7);
     cout << "\n  Impact: 60-90% performance improvement on large datasets\n";
     cout << "----------------------------------------------------------------------\n";
@@ -428,7 +428,7 @@ void AlgorithmicEfficiency::displaySummary() {
     cout << "----------------------------------------------------------------------\n";
 
     setColor(10);
-    cout << "\n_________________________\n";
+    cout << "\n_______________________________________________________________________\n";
     cout << "  |  Overall Assessment: Good implementation with room for optimization |\n";
     cout << "  |  Estimated Performance Gain: 50-80% with suggested improvements     |  \n";
     cout << "  -----------------------------------------------------------------------\n";
@@ -446,6 +446,6 @@ void AlgorithmicEfficiency::generateFullReport() {
     analyzeRelationsModule();
     displaySummary();
 
-    setColor(7); // Reset to white
+    setColor(7); 
     cout << "\n";
 }
