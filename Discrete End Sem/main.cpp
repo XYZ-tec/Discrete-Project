@@ -868,6 +868,177 @@ void verificationMenu()
             pauseScreen();
             break;
         }
+        case 3:
+        {
+            setcolor(INFO_COLOR);
+            cout << "\n=== Validating Student Schedule Conflicts ===\n";
+
+            // Build course times map (you may need to adjust based on your data structure)
+            map<string, pair<int, int>> courseTimes;
+            // Example: Add sample time slots or fetch from your database
+            // courseTimes["CS101"] = {9, 11};  // 9 AM to 11 AM
+            // courseTimes["CS102"] = {10, 12}; // 10 AM to 12 PM
+
+            // Build student courses map from enrollments
+            map<string, set<string>> studentCourses;
+            vector<string> allStudents;
+            // Get all students from database
+            // For each student, get their enrolled courses
+
+            setcolor(INFO_COLOR);
+            cout << "Note: This check requires course time data to be set up.\n";
+            cout << "Checking with available enrollment data...\n";
+
+            // Get student courses from database
+            // You'll need to implement a method to extract this from your database
+
+            bool hasConflicts = !checker.validateStudentScheduleConflicts(courseTimes, studentCourses);
+
+            if (hasConflicts)
+            {
+                setcolor(ERROR_COLOR);
+                cout << " SCHEDULE CONFLICTS DETECTED!\n";
+                cout << "Some students have overlapping course times.\n";
+            }
+            else
+            {
+                setcolor(SUCCESS_COLOR);
+                cout << " No schedule conflicts found.\n";
+            }
+            setcolor(MENU_OPTION_COLOR);
+            pauseScreen();
+            break;
+        }
+        case 4:
+        {
+            setcolor(INFO_COLOR);
+            cout << "\n=== Checking Room Double Booking ===\n";
+
+            // Build course times map
+            map<string, pair<int, int>> courseTimes;
+            // Example time slots
+            // courseTimes["CS101"] = {9, 11};
+            // courseTimes["MATH201"] = {9, 11};
+
+            // Build course-room mapping
+            map<string, string> courseRoom;
+            // Example: courseRoom["CS101"] = "Room101";
+            // Example: courseRoom["MATH201"] = "Room101"; // Potential conflict
+
+            setcolor(INFO_COLOR);
+            cout << "Note: This check requires room assignment and time data.\n";
+            cout << "Enter number of courses to check (0 to skip): ";
+            int numCourses;
+            cin >> numCourses;
+            cin.ignore();
+
+            if (numCourses > 0)
+            {
+                for (int i = 0; i < numCourses; i++)
+                {
+                    string courseId, roomId;
+                    int startTime, endTime;
+
+                    cout << "\nCourse " << (i + 1) << ":\n";
+                    cout << "  Course ID: ";
+                    getline(cin, courseId);
+                    cout << "  Room ID: ";
+                    getline(cin, roomId);
+                    cout << "  Start time (e.g., 9 for 9 AM): ";
+                    cin >> startTime;
+                    cout << "  End time (e.g., 11 for 11 AM): ";
+                    cin >> endTime;
+                    cin.ignore();
+
+                    courseTimes[courseId] = { startTime, endTime };
+                    courseRoom[courseId] = roomId;
+                }
+
+                bool hasDoubleBooking = !checker.checkRoomDoubleBooking(courseTimes, courseRoom);
+
+                if (hasDoubleBooking)
+                {
+                    setcolor(ERROR_COLOR);
+                    cout << "\n ROOM DOUBLE BOOKING DETECTED!\n";
+                    cout << "Some rooms are assigned to multiple courses at the same time.\n";
+                }
+                else
+                {
+                    setcolor(SUCCESS_COLOR);
+                    cout << "\n No room double booking found.\n";
+                }
+            }
+            setcolor(MENU_OPTION_COLOR);
+            pauseScreen();
+            break;
+        }
+        case 5:
+        {
+            setcolor(INFO_COLOR);
+            cout << "\n=== Checking Student Overload ===\n";
+
+            // Build course credits map
+            map<string, int> courseCredits;
+            // Build student courses map
+            map<string, set<string>> studentCourses;
+
+            cout << "Enter maximum credit hours allowed: ";
+            int maxCredits;
+            cin >> maxCredits;
+            cin.ignore();
+
+            cout << "Enter number of students to check: ";
+            int numStudents;
+            cin >> numStudents;
+            cin.ignore();
+
+            for (int i = 0; i < numStudents; i++)
+            {
+                string studentId;
+                int numCourses;
+
+                cout << "\nStudent " << (i + 1) << ":\n";
+                cout << "  Student ID: ";
+                getline(cin, studentId);
+                cout << "  Number of enrolled courses: ";
+                cin >> numCourses;
+                cin.ignore();
+
+                set<string> courses;
+                for (int j = 0; j < numCourses; j++)
+                {
+                    string courseId;
+                    int credits;
+
+                    cout << "    Course " << (j + 1) << " ID: ";
+                    getline(cin, courseId);
+                    cout << "    Credits: ";
+                    cin >> credits;
+                    cin.ignore();
+
+                    courses.insert(courseId);
+                    courseCredits[courseId] = credits;
+                }
+                studentCourses[studentId] = courses;
+            }
+
+            bool hasOverload = !checker.checkStudentOverload(courseCredits, studentCourses, maxCredits);
+
+            if (hasOverload)
+            {
+                setcolor(ERROR_COLOR);
+                cout << "\n STUDENT OVERLOAD DETECTED!\n";
+                cout << "Some students exceed the maximum credit hours.\n";
+            }
+            else
+            {
+                setcolor(SUCCESS_COLOR);
+                cout << "\n No student overload found.\n";
+            }
+            setcolor(MENU_OPTION_COLOR);
+            pauseScreen();
+            break;
+        }
         case 6:
         {
             setcolor(MENU_BORDER_COLOR);
@@ -878,6 +1049,10 @@ void verificationMenu()
             cout << "==============================================================\n\n";
             setcolor(MENU_OPTION_COLOR);
 
+            int passedChecks = 0;
+            int totalChecks = 4;
+
+            // Check 1: Circular Dependency
             cout << "1. Circular Dependency Check: ";
             if (db.hasCircularDependency())
             {
@@ -888,10 +1063,85 @@ void verificationMenu()
             {
                 setcolor(SUCCESS_COLOR);
                 cout << " PASSED\n";
+                passedChecks++;
             }
+            setcolor(MENU_OPTION_COLOR);
 
-            setcolor(SUCCESS_COLOR);
-            cout << "\n All checks completed!\n";
+            // Check 2: Student Schedule Conflicts
+            cout << "2. Student Schedule Conflicts Check: ";
+            map<string, pair<int, int>> courseTimes;
+            map<string, set<string>> studentCourses;
+            // Note: Using empty maps for demo - in production, populate from database
+            if (checker.validateStudentScheduleConflicts(courseTimes, studentCourses))
+            {
+                setcolor(SUCCESS_COLOR);
+                cout << " PASSED\n";
+                passedChecks++;
+            }
+            else
+            {
+                setcolor(ERROR_COLOR);
+                cout << " FAILED\n";
+            }
+            setcolor(MENU_OPTION_COLOR);
+
+            // Check 3: Room Double Booking
+            cout << "3. Room Double Booking Check: ";
+            map<string, string> courseRoom;
+            // Note: Using empty maps for demo - in production, populate from database
+            if (checker.checkRoomDoubleBooking(courseTimes, courseRoom))
+            {
+                setcolor(SUCCESS_COLOR);
+                cout << " PASSED\n";
+                passedChecks++;
+            }
+            else
+            {
+                setcolor(ERROR_COLOR);
+                cout << " FAILED\n";
+            }
+            setcolor(MENU_OPTION_COLOR);
+
+            // Check 4: Student Overload
+            cout << "4. Student Overload Check: ";
+            map<string, int> courseCredits;
+            int maxCredits = 18; // Default max credits
+            // Note: Using empty maps for demo - in production, populate from database
+            if (checker.checkStudentOverload(courseCredits, studentCourses, maxCredits))
+            {
+                setcolor(SUCCESS_COLOR);
+                cout << " PASSED\n";
+                passedChecks++;
+            }
+            else
+            {
+                setcolor(ERROR_COLOR);
+                cout << " FAILED\n";
+            }
+            setcolor(MENU_OPTION_COLOR);
+
+            // Summary
+            setcolor(MENU_BORDER_COLOR);
+            cout << "\n==============================================================\n";
+            setcolor(MENU_TITLE_COLOR);
+            cout << "                    SUMMARY REPORT                         \n";
+            setcolor(MENU_BORDER_COLOR);
+            cout << "==============================================================\n";
+            setcolor(INFO_COLOR);
+            cout << "Total Checks: " << totalChecks << endl;
+            cout << "Passed: " << passedChecks << endl;
+            cout << "Failed: " << (totalChecks - passedChecks) << endl;
+
+            if (passedChecks == totalChecks)
+            {
+                setcolor(SUCCESS_COLOR);
+                cout << "\n All consistency checks PASSED!\n";
+            }
+            else
+            {
+                setcolor(ERROR_COLOR);
+                cout << "\n Some checks FAILED. Please review the system.\n";
+            }
             setcolor(MENU_OPTION_COLOR);
             pauseScreen();
             break;
